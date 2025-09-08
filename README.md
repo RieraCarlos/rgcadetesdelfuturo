@@ -1,8 +1,87 @@
-# React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Organigrama de carpetas
+-public
+-src
+    --app
+        ---Rgtechnology
+        ---V1
+            ----Archivos de versiones anteriores
+    --assets
+    --components
+        ---Blogs
+            ----BlogsComponent.tsx
+            ----CreateBlog.tsx
+            ----FormBlog.tsx
+        ---ElementsHome (Elementos de la landing principal)
+            ----ElementCinco.tsx
+            ----ElementCuatro.tsx
+            ----ElementTres.tsx
+            ----ElementUno.tsx
+            ----ElementDos.tsx
+            ----Empresas.tsx
+            ----Footer.tsx
+            ----Testimonios.tsx
+        ---QrScanner (Scanner de QR para el login de estudiantes)
+            ----QrCodeScanner.tsx
+        ---ui
+            ----componentes de la libreria de shadcn
+        ---V1
+            ----Archivos de versiones anteriores
+    --hooks
+        ---gsap
+            ----componentes de la libreria reactbits
+        ---use-mobile.ts
+    --img
+    --lib
+    --routes
+        ---pages
+            ----V1
+                ----Archivos de versiones anteriores
+            ----V2
+                ----Admin
+                    -----components (libreria de shadcn)
+                        ------archivos de dashboard administrativo
+                    -----login
+                        ------login-forn.tsx
+                    -----data.json
+                    -----LoginAdministrativo.tsx
+                    -----page.tsx
+                ----Estudiantes
+                    -----components (libreria de shadcn)
+                        ------componentsInstructores
+                            -------InstructoresData.tsx
+                            -------InstructoresList.tsx
+                            -------InstructoresPerfil.tsx
+                        ------app-sidebar.tsx
+                        ------Instructores.tsx
+                        ------nav-actions.tsx
+                        ------nav-favorites.tsx
+                        ------nav-main.tsx
+                        ------nav-secondary.tsx
+                        ------nav-workspaces.tsx
+                        ------PerfilEstudiante.tsx
+                        ------TareaEstudiante.tsx
+                        ------team-switcher.tsx
+                    -----HomeEstudiante.tsx
+                ----Instructores
+                    -----HomeInstructores.tsx
+                ----Home.tsx
+                ----HomeLogin.tsx
+                ----ScannerLogin.tsx
+        ---root.jsx
+    --services (carpeta que almacena los endpoint a supabase)
+        ---loginEstudiante.ts
+    --supabase
+        ---supabaseClient.tsx
+    --App.css
+    --App.tsx
+    --index.css
+    --main.tsx
+-.env
+-.gitignore
+-components.json
+-eslint.config.ts
+-index.html
+-package-lock.json
+-package.json
+-tsconfig.json
+-vite.config.ts
