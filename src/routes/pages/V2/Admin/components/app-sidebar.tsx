@@ -32,7 +32,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { title } from "process"
 
 const data = {
   user: {
@@ -41,160 +40,79 @@ const data = {
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
-    {
-      title: "Dashboard",
-      url: "#",
-      icon: IconDashboard,
-      isActive: true,
-    },
-    {
-      title: "Registro de matriculas",
-      url: "#",
-      icon: IconListDetails,
-    },
-    {
-      title: "Seguimiento de pagos",
-      url: "#",
-      icon: IconChartBar,
-    },
-    {
-      title: "Seguimiento de estudiantes",
-      url: "#",
-      icon: IconUsers,
-    },
-  ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: IconCamera,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: IconFileDescription,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: IconFileAi,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
+    { title: "Dashboard", url: "#", icon: IconDashboard, isActive: true },
+    { title: "Registro de matriculas", url: "#", icon: IconListDetails },
+    { title: "Seguimiento de pagos", url: "#", icon: IconChartBar },
+    { title: "Seguimiento de estudiantes", url: "#", icon: IconUsers },
   ],
   navSecondary: [
-    {
-      title: "Configuraciones",
-      url: "#",
-      icon: IconSettings,
-    },
-    {
-      title: "Ayuda",
-      url: "#",
-      icon: IconHelp,
-    }
+    { title: "Configuraciones", url: "#", icon: IconSettings },
+    { title: "Ayuda", url: "#", icon: IconHelp },
   ],
   documents: [
-    {
-      title: "Base de datos nacional",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
-      title: "Reportes",
-      url: "#",
-      icon: IconReport,
-    },
-    {
-      title: "Asistente IA",
-      url: "#",
-      icon: IconFileWord,
-    },
+    { title: "Base de datos nacional", url: "#", icon: IconDatabase },
+    { title: "Reportes", url: "#", icon: IconReport },
+    { title: "Asistente IA", url: "#", icon: IconFileWord },
   ],
 }
 
 export function AppSidebar({ 
-    onMainNavItemClick,
-    activeItemTitle,
-    onNavDocumentItemClick,
-    activeItemTitleDocument,
-    ...props 
+  onMainNavItemClick,
+  activeItemTitle,
+  onNavDocumentItemClick,
+  activeItemTitleDocument,
+  ...props 
 }: React.ComponentProps<typeof Sidebar> & {
-    onMainNavItemClick?: (item: NavMainItem) => void
-    activeItemTitle?: string
-    onNavDocumentItemClick?: (item: NavDocumentItem) => void
-    activeItemTitleDocument?: string
+  onMainNavItemClick?: (item: NavMainItem) => void
+  activeItemTitle?: string
+  onNavDocumentItemClick?: (item: NavDocumentItem) => void
+  activeItemTitleDocument?: string
 }) {
-    const navMainItems = React.useMemo(
-        () =>
-        data.navMain.map((item) => ({
-            ...item,
-            isActive: item.title === activeItemTitle,
-        })),
-        [activeItemTitle],
-    )
-    const navDocumentItems = React.useMemo(
-        () =>
-        data.documents.map((item) => ({
-            ...item,
-            isActive: item.title === activeItemTitleDocument,
-        })),
-        [activeItemTitleDocument],
-    )
-    return (
-        <Sidebar collapsible="offcanvas" {...props}>
-        <SidebarHeader>
-            <SidebarMenu>
-            <SidebarMenuItem>
-                <SidebarMenuButton
-                asChild
-                className="data-[slot=sidebar-menu-button]:!p-1.5"
-                >
-                <a href="#">
-                    <IconInnerShadowTop className="!size-5" />
-                    <span className="text-base font-semibold">Start Good</span>
-                </a>
-                </SidebarMenuButton>
-            </SidebarMenuItem>
-            </SidebarMenu>
-        </SidebarHeader>
-        <SidebarContent>
-            <NavMain items={navMainItems} onItemClick={onMainNavItemClick} />
-            <NavDocuments items={navDocumentItems} onItemClick={onNavDocumentItemClick} />
-            <NavSecondary items={data.navSecondary} className="mt-auto" />
-        </SidebarContent>
-        <SidebarFooter>
-            <NavUser user={data.user} />
-        </SidebarFooter>
-        </Sidebar>
-    )
+  const navMainItems = React.useMemo(
+    () =>
+      data.navMain.map((item) => ({
+        ...item,
+        isActive: item.title === activeItemTitle,
+      })),
+    [activeItemTitle],
+  )
+
+  const navDocumentItems = React.useMemo(
+    () =>
+      data.documents.map((item) => ({
+        ...item,
+        isActive: item.title === activeItemTitleDocument,
+      })),
+    [activeItemTitleDocument],
+  )
+
+  return (
+    <Sidebar collapsible="offcanvas" {...props}>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              className="data-[slot=sidebar-menu-button]:!p-1.5"
+            >
+              <a href="#">
+                <IconInnerShadowTop className="!size-5" />
+                <span className="text-base font-semibold">Start Good</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+
+      <SidebarContent>
+        <NavMain items={navMainItems} onItemClick={onMainNavItemClick} />
+        <NavDocuments items={navDocumentItems} onItemClick={onNavDocumentItemClick} />
+        <NavSecondary items={data.navSecondary} className="mt-auto" />
+      </SidebarContent>
+
+      <SidebarFooter>
+        <NavUser user={data.user} />
+      </SidebarFooter>
+    </Sidebar>
+  )
 }
