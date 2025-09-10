@@ -1,6 +1,7 @@
 import { AppSidebar } from "./components/app-sidebar"
 import { NavActions } from "./components/nav-actions"
 import { type NavMainItem } from "./components/nav-main"
+import { type NavWorkspaceItem } from "./components/nav-workspaces"
 
 import {
   Breadcrumb,
@@ -14,28 +15,42 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import React from "react"
+
 // Importar los componentes de las páginas
 import Perfil from "./components/PerfilEstudiante"
 import Tareas from "./components/TareasEstudiante"
 import InstructorsPage from "./components/Instructores"
 import BlogsComponents from "@/components/Blogs/BlogsComponent"
-import React from "react"
+import TarjetasEstudio from "./components/TarjetasEstudio"
+import NotasActividades from "./components/NotasActividades"
+import Calendario from "./components/Calendario"
 
 
 export default function HomEstudiante() {
     const [activeItemTitle, setActiveItemTitle] = React.useState<string>("Home");
+    const [activeWorkspaceTitle, setActiveWorkspaceTitle] = React.useState<string>("");
+
 
     const handleMainNavItemClick = (item: NavMainItem) => {
       setActiveItemTitle(item.title);
+      setActiveWorkspaceTitle("");
     }
-    const activePage = activeItemTitle;
+     const handleNavWorkspacesItemClick = (item: NavWorkspaceItem) => {
+      setActiveWorkspaceTitle(item.title);
+      setActiveItemTitle("");
+    }
+    const activePage = activeItemTitle || activeWorkspaceTitle;
 
     // Diccionario de componentes
     const pages = {
         Home: <Perfil />,
         Tareas: <Tareas />,
         Instructores: <InstructorsPage />,
-        Blog:<BlogsComponents/>
+        Blog:<BlogsComponents/>,
+        'Tarjetas de estudio':<TarjetasEstudio/>,
+        'Notas y actividades':<NotasActividades/>,
+        Calendario:<Calendario/>
     };
     type PagesType = {
         [key: string]: React.ReactNode;
@@ -47,6 +62,8 @@ export default function HomEstudiante() {
           <AppSidebar 
               onMainNavItemClick={handleMainNavItemClick}
               activeItemTitle={activeItemTitle}
+              onNavWorkspacesItemClick={handleNavWorkspacesItemClick}
+              activeWorkspaceTitle={activePage}
           />
           <SidebarInset>
               <header className="flex h-14 shrink-0 items-center gap-2">

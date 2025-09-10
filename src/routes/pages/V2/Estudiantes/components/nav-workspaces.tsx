@@ -17,32 +17,41 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
+import { Link } from "react-router-dom"
+
+export type NavWorkspaceItem = {
+  title: string,
+  url: string,
+  emoji: React.ReactNode,
+  isActive?: boolean,
+  badge?: string,
+  pages: {
+    title: string,
+    url: string,
+    emoji: React.ReactNode,
+  }[],
+}
 
 export function NavWorkspaces({
-  workspaces,
+  items,
+  onItemClick,
 }: {
-  workspaces: {
-    name: string
-    emoji: React.ReactNode
-    pages: {
-      name: string
-      emoji: React.ReactNode
-    }[]
-  }[]
+  items: NavWorkspaceItem[],
+  onItemClick?: (item: NavWorkspaceItem) => void,
 }) {
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Herramientas de estudio</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
-          {workspaces.map((workspace) => (
-            <Collapsible key={workspace.name}>
+          {items.map((item) => (
+            <Collapsible key={item.title}>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="#">
-                    <span>{workspace.emoji}</span>
-                    <span>{workspace.name}</span>
-                  </a>
+                <SidebarMenuButton asChild isActive={item.isActive} onClick={() => onItemClick?.(item)}>
+                  <Link to="#">
+                    <span>{item.emoji}</span>
+                    <span>{item.title}</span>
+                  </Link>
                 </SidebarMenuButton>
                 <CollapsibleTrigger asChild>
                   <SidebarMenuAction
@@ -57,12 +66,12 @@ export function NavWorkspaces({
                 </SidebarMenuAction>
                 <CollapsibleContent>
                   <SidebarMenuSub>
-                    {workspace.pages.map((page) => (
-                      <SidebarMenuSubItem key={page.name}>
+                    {item.pages.map((page) => (
+                      <SidebarMenuSubItem key={page.title}>
                         <SidebarMenuSubButton asChild>
                           <a href="#">
                             <span>{page.emoji}</span>
-                            <span>{page.name}</span>
+                            <span>{page.title}</span>
                           </a>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>

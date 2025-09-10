@@ -18,7 +18,7 @@ import {
 import { NavFavorites } from "./nav-favorites"
 import { type NavMainItem, NavMain } from "./nav-main"
 import { NavSecondary } from "./nav-secondary"
-import { NavWorkspaces } from "./nav-workspaces"
+import { type NavWorkspaceItem, NavWorkspaces } from "./nav-workspaces"
 import { TeamSwitcher } from "./team-switcher"
 import {
   Sidebar,
@@ -107,63 +107,63 @@ const data = {
   ],
   workspaces: [
     {
-      name: "Tarjetas de estudio",
+      title: "Tarjetas de estudio",
       emoji: "🏠",
       pages: [
         {
-          name: "Daily Journal & Reflection",
+          title: "Daily Journal & Reflection",
           url: "#",
           emoji: "📔",
         },
         {
-          name: "Health & Wellness Tracker",
+          title: "Health & Wellness Tracker",
           url: "#",
           emoji: "🍏",
         },
         {
-          name: "Personal Growth & Learning Goals",
+          title: "Personal Growth & Learning Goals",
           url: "#",
           emoji: "🌟",
         },
       ],
     },
     {
-      name: "Guia de tareas",
+      title: "Notas y actividades",
       emoji: "💼",
       pages: [
         {
-          name: "Career Objectives & Milestones",
+          title: "Career Objectives & Milestones",
           url: "#",
           emoji: "🎯",
         },
         {
-          name: "Skill Acquisition & Training Log",
+          title: "Skill Acquisition & Training Log",
           url: "#",
           emoji: "🧠",
         },
         {
-          name: "Networking Contacts & Events",
+          title: "Networking Contacts & Events",
           url: "#",
           emoji: "🤝",
         },
       ],
     },
     {
-      name: "Blog de notas",
+      title: "Calendario",
       emoji: "🎨",
       pages: [
         {
-          name: "Writing Ideas & Story Outlines",
+          title: "Writing Ideas & Story Outlines",
           url: "#",
           emoji: "✍️",
         },
         {
-          name: "Art & Design Portfolio",
+          title: "Art & Design Portfolio",
           url: "#",
           emoji: "🖼️",
         },
         {
-          name: "Music Composition & Practice Log",
+          title: "Music Composition & Practice Log",
           url: "#",
           emoji: "🎵",
         },
@@ -175,10 +175,14 @@ const data = {
 export function AppSidebar({
   onMainNavItemClick,
   activeItemTitle,
+  onNavWorkspacesItemClick,
+  activeWorkspaceTitle,
   ...props 
 }: React.ComponentProps<typeof Sidebar> & {
-  onMainNavItemClick?: (item: NavMainItem) => void
-  activeItemTitle?: string
+  onMainNavItemClick?: (item: NavMainItem) => void,
+  activeItemTitle?: string,
+  onNavWorkspacesItemClick?: (item: NavWorkspaceItem) => void,
+  activeWorkspaceTitle?: string,
 }) {
   const navMainItems = React.useMemo(
     () =>
@@ -188,6 +192,15 @@ export function AppSidebar({
       })),
     [activeItemTitle],
   )
+  const navWorkspaceItems = React.useMemo(
+    () =>
+      data.workspaces.map((item) => ({
+        ...item,
+          isActive: item.title === activeWorkspaceTitle,
+      })),
+    [activeWorkspaceTitle],
+  )
+
   return (
     <Sidebar className="border-r-0" {...props}>
       <SidebarHeader>
@@ -196,7 +209,7 @@ export function AppSidebar({
       </SidebarHeader>
       <SidebarContent>
         <NavFavorites favorites={data.favorites} />
-        <NavWorkspaces workspaces={data.workspaces} />
+        <NavWorkspaces items={navWorkspaceItems} onItemClick={onNavWorkspacesItemClick} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarRail />
