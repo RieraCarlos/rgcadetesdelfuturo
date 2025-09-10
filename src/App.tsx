@@ -6,6 +6,7 @@ import HomEstudiante from './routes/pages/V2/Estudiantes/HomEstudiante'
 import Dashboard from './routes/pages/V2/Admin/page'
 import HomeLogin from './routes/pages/V2/HomeLogin'
 import LoginAdmin from './routes/pages/V2/Admin/LoginAdministrativo'
+import HomeInstructores from './routes/pages/V2/Instructores/HomeInstructores.js'
 
 function App() {
   {/* 
@@ -30,7 +31,7 @@ function App() {
         <Route path="/estudiante/login" element={<ScannerLogin/>}/>
         <Route path="/estudiante" element={<HomEstudiante/>}/>
         <Route path="/dashboard/admin" element={<Dashboard/>}/>
-        <Route path="/instructor" element={<Dashboard/>}/>
+        <Route path="/instructor" element={<HomeInstructores/>}/>
         <Route path="/admin/login" element={<LoginAdmin/>}/>
       </Routes>
     </div>

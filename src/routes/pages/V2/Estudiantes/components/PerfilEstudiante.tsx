@@ -1,5 +1,6 @@
 import Soldado3 from "../../../../../img/Soldado3.png";
 const PerfilEstudiante = () => {
+    ///
   return (
     <div className="flex items-center justify-center">
         <div className="flex-1 p-6 md:p-12 max-w-[80%] rounded-3xl border-l-8 border-t-4 border-b-4 border-[#ffcc01]">

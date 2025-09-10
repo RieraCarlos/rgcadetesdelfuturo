@@ -12,7 +12,7 @@ export default function HomeLogin(){
                 <CircleUser className="h-16 w-16 mb-4"/>
                 <p className="text-lg font-semibold">Estudiante</p>
             </Link>  
-            <Link to="/admin/login" className="w-[200px] h-[200px] border-2 border-white rounded-xl p-4 flex flex-col justify-center items-center text-center hover:bg-[#ffcc01] hover:text-black transition-colors duration-300 cursor-pointer">
+            <Link to="/instructor" className="w-[200px] h-[200px] border-2 border-white rounded-xl p-4 flex flex-col justify-center items-center text-center hover:bg-[#ffcc01] hover:text-black transition-colors duration-300 cursor-pointer">
                 <CircleUserRound className="h-16 w-16 mb-4"/>
                 <p className="text-lg font-semibold">Instructor</p>
             </Link>

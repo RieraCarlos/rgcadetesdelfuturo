@@ -28,7 +28,7 @@ export default function HomEstudiante() {
     const handleMainNavItemClick = (item: NavMainItem) => {
       setActiveItemTitle(item.title);
     }
-      const activePage = activeItemTitle;
+    const activePage = activeItemTitle;
 
     // Diccionario de componentes
     const pages = {

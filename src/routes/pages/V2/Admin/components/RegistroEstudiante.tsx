@@ -29,6 +29,8 @@ const RegistroEstudiante: React.FC = () => {
 
   const onSubmit: SubmitHandler<IRegistrationForm> = data => {
     console.log(data);
+    //endpoint
+    
     // Here you would handle the form submission, e.g., send data to an API
   };
 
