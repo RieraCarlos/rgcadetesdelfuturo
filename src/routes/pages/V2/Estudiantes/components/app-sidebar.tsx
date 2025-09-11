@@ -37,7 +37,6 @@ const data = {
     },
   ],
   navMain: [
-    
     {
       title: "Home",
       url: "#",
@@ -108,66 +107,18 @@ const data = {
   workspaces: [
     {
       title: "Tarjetas de estudio",
-      emoji: "🏠",
-      pages: [
-        {
-          title: "Daily Journal & Reflection",
-          url: "#",
-          emoji: "📔",
-        },
-        {
-          title: "Health & Wellness Tracker",
-          url: "#",
-          emoji: "🍏",
-        },
-        {
-          title: "Personal Growth & Learning Goals",
-          url: "#",
-          emoji: "🌟",
-        },
-      ],
+      emoji: "🎯",
+      pages: [], // Array vacío = sin submenú desplegable
     },
     {
       title: "Notas y actividades",
       emoji: "💼",
-      pages: [
-        {
-          title: "Career Objectives & Milestones",
-          url: "#",
-          emoji: "🎯",
-        },
-        {
-          title: "Skill Acquisition & Training Log",
-          url: "#",
-          emoji: "🧠",
-        },
-        {
-          title: "Networking Contacts & Events",
-          url: "#",
-          emoji: "🤝",
-        },
-      ],
+      pages: [],
     },
     {
       title: "Calendario",
       emoji: "🎨",
-      pages: [
-        {
-          title: "Writing Ideas & Story Outlines",
-          url: "#",
-          emoji: "✍️",
-        },
-        {
-          title: "Art & Design Portfolio",
-          url: "#",
-          emoji: "🖼️",
-        },
-        {
-          title: "Music Composition & Practice Log",
-          url: "#",
-          emoji: "🎵",
-        },
-      ],
+      pages: [],
     },
   ],
 }

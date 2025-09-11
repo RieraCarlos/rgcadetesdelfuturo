@@ -50,7 +50,11 @@ export default function HomEstudiante() {
         Blog:<BlogsComponents/>,
         'Tarjetas de estudio':<TarjetasEstudio/>,
         'Notas y actividades':<NotasActividades/>,
-        Calendario:<Calendario/>
+        Calendario:<Calendario/>,
+        // Páginas específicas de tarjetas de estudio
+        'Daily Journal & Reflection': <TarjetasEstudio selectedSetId="daily-journal" />,
+        'Health & Wellness Tracker': <TarjetasEstudio selectedSetId="health-wellness" />,
+        'Personal Growth & Learning Goals': <TarjetasEstudio selectedSetId="personal-growth" />,
     };
     type PagesType = {
         [key: string]: React.ReactNode;

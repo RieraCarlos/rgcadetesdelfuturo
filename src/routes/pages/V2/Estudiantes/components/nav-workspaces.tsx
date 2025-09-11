@@ -19,25 +19,32 @@ import {
 } from "@/components/ui/sidebar"
 import { Link } from "react-router-dom"
 
+// Tipos actualizados para manejar IDs
+export type NavWorkspacePageItem = {
+  title: string,
+  url: string,
+  emoji: React.ReactNode,
+  id?: string, // Agregamos ID para identificar páginas específicas
+}
+
 export type NavWorkspaceItem = {
   title: string,
   url: string,
   emoji: React.ReactNode,
   isActive?: boolean,
   badge?: string,
-  pages: {
-    title: string,
-    url: string,
-    emoji: React.ReactNode,
-  }[],
+  pages: NavWorkspacePageItem[],
+  id?: string, // ID del workspace si es necesario
 }
 
 export function NavWorkspaces({
   items,
   onItemClick,
+  onPageClick, // Nueva prop para manejar clicks en páginas
 }: {
   items: NavWorkspaceItem[],
   onItemClick?: (item: NavWorkspaceItem) => void,
+  onPageClick?: (page: NavWorkspacePageItem, workspace: NavWorkspaceItem) => void, // Nueva prop
 }) {
   return (
     <SidebarGroup>
@@ -69,7 +76,13 @@ export function NavWorkspaces({
                     {item.pages.map((page) => (
                       <SidebarMenuSubItem key={page.title}>
                         <SidebarMenuSubButton asChild>
-                          <a href="#">
+                          <a 
+                            href="#" 
+                            onClick={(e) => {
+                              e.preventDefault();
+                              onPageClick?.(page, item); // Llamamos al handler de página
+                            }}
+                          >
                             <span>{page.emoji}</span>
                             <span>{page.title}</span>
                           </a>
