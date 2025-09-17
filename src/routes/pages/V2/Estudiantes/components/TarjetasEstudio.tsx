@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Brain, Loader, ChevronLeft, CheckCircle, XCircle, Trophy, RotateCcw, Plus, Play } from 'lucide-react';
+import { Brain, Loader, ChevronLeft, CheckCircle, XCircle, Trophy, RotateCcw, Plus, Play, BookOpen, Star, Award } from 'lucide-react';
 
 // Interfaces
 interface Question {
@@ -14,6 +14,8 @@ interface StudyCard {
   topic: string;
   questions: Question[];
   difficulty: 'básico' | 'intermedio' | 'avanzado';
+  cardNumber: number; // Número de tarjeta (1-5)
+  pointsPerQuestion: number; // Valor en puntos de cada pregunta
   generatedByAI: boolean;
 }
 
@@ -22,6 +24,7 @@ interface CardAnswer {
   questionIndex: number;
   selectedOption: number;
   isCorrect: boolean;
+  pointsEarned: number;
   timeSpent?: number;
 }
 
@@ -32,8 +35,7 @@ export default function TarjetasEstudioIA() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(0);
   const [newTopic, setNewTopic] = useState('');
-  const [difficulty, setDifficulty] = useState<'básico' | 'intermedio' | 'avanzado'>('intermedio');
-  const [numQuestions, setNumQuestions] = useState(5);
+  const [numQuestions, setNumQuestions] = useState(10);
 
   const [studyCards, setStudyCards] = useState<StudyCard[]>([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -43,81 +45,82 @@ export default function TarjetasEstudioIA() {
   const [isStudying, setIsStudying] = useState(false);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
+  const [studyingTopic, setStudyingTopic] = useState<string | null>(null);
 
-  // Generar tarjeta con Google AI API
-  const generateAICard = async (topic: string, difficulty: string, numQuestions: number): Promise<StudyCard> => {
-    const prompt = `Responde ÚNICAMENTE con un objeto JSON válido. Genera ${numQuestions} preguntas sobre "${topic}" nivel ${difficulty}.
+      // ---------- Generación de 5 tarjetas de estudio con preguntas únicas ----------
+    const generateAICards = async (topic: string, questionsPerCard: number): Promise<StudyCard[]> => {
+      const difficulties: ('básico' | 'intermedio' | 'avanzado')[] = ['básico', 'intermedio', 'avanzado'];
+      const totalQuestions = questionsPerCard * 5; // 5 tarjetas
 
-Formato exacto requerido:
-[
-  {
-    "question": "Pregunta sobre ${topic}?",
-    "options": ["Respuesta correcta", "Opción incorrecta 1", "Opción incorrecta 2", "Opción incorrecta 3"],
-    "correctAnswer": 0,
-    "explanation": "Explicación clara de por qué la primera opción es correcta"
-  }
-]
-
-IMPORTANTE: 
-- Responde SOLO con JSON, sin texto antes o después
-- Cada pregunta debe tener 4 opciones
-- La posición de la respuesta correcta debe estar indicada en correctAnswer
-- No uses saltos de línea dentro de las cadenas de texto
-- Genera preguntas únicas y diferentes`;
-
-    try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.7, maxOutputTokens: 2048 },
-        }),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('API Error Response:', errorText);
-        throw new Error(`Error de API ${response.status}: ${response.statusText}`);
+      const prompt = `Genera ${totalQuestions} preguntas de opción múltiple sobre "${topic}" con dificultad variada.
+    RESPONDE SOLO CON JSON EXACTO:
+    [
+      {
+        "question": "Pregunta sobre ${topic}",
+        "options": ["Opción A", "Opción B", "Opción C", "Opción D"],
+        "correctAnswer": 0,
+        "explanation": "Explicación breve sin saltos de línea ni comillas internas"
       }
+    ]
 
-      const data = await response.json();
-      if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-        throw new Error('Respuesta de API inválida: estructura inesperada');
-      }
+    REGLAS:
+    - Solo JSON válido
+    - Cada pregunta debe ser única
+    - Exactamente ${totalQuestions} preguntas
+    - Mezcla preguntas fáciles, intermedias y difíciles`;
 
-      let content = data.candidates[0].content.parts[0].text;
-      content = content.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-      const jsonMatch = content.match(/\[[\s\S]*\]/);
-      if (!jsonMatch) throw new Error('No se encontró JSON válido en la respuesta');
-
-      let questions: Question[];
       try {
-        questions = JSON.parse(jsonMatch[0]);
-      } catch (parseError) {
-        console.error('Error al parsear JSON:', parseError);
-        throw new Error(`Error al parsear JSON: ${parseError.message}`);
-      }
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.3, maxOutputTokens: 4000, candidateCount: 1 },
+          }),
+        });
 
-      // Validar cada pregunta
-      questions.forEach(q => {
-        if (!q.question || !q.options || q.options.length !== 4 || typeof q.correctAnswer !== 'number' || !q.explanation) {
-          throw new Error('Estructura de pregunta inválida');
+        if (!response.ok) throw new Error(`Error de API ${response.status}: ${response.statusText}`);
+        const data = await response.json();
+        let content = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+
+        if (!content) throw new Error('Respuesta de API inválida');
+
+        // Limpiar texto y extraer JSON
+        content = content.replace(/```json\s*|```/gi, '').replace(/^[^[{]*/, '').replace(/[^}\]]*$/, '');
+        const questions: Question[] = JSON.parse(content);
+
+        if (!Array.isArray(questions) || questions.length < totalQuestions) 
+          throw new Error('No se generaron suficientes preguntas únicas');
+
+        // Mezclar preguntas
+        const shuffled = questions.sort(() => Math.random() - 0.5);
+
+        // Distribuir en 5 tarjetas sin repetir
+        const pointsPerQuestion = Math.round((100 / totalQuestions) * 100) / 100;
+        const cards: StudyCard[] = [];
+
+        for (let i = 0; i < 5; i++) {
+          const cardQuestions = shuffled.slice(i * questionsPerCard, (i + 1) * questionsPerCard);
+          const cardDifficulty = difficulties[Math.floor(Math.random() * difficulties.length)];
+
+          cards.push({
+            id: `${Date.now()}-${Math.random()}-${i}`,
+            topic,
+            questions: cardQuestions,
+            difficulty: cardDifficulty,
+            cardNumber: i + 1,
+            pointsPerQuestion,
+            generatedByAI: true,
+          });
         }
-      });
 
-      return {
-        id: `${Date.now()}-${Math.random()}`,
-        topic,
-        questions,
-        difficulty: difficulty as 'básico' | 'intermedio' | 'avanzado',
-        generatedByAI: true,
-      };
-    } catch (error) {
-      console.error('Error completo en generateAICard:', error);
-      throw error;
-    }
-  };
+        return cards;
+      } catch (error) {
+        console.error('Error en generateAICards:', error);
+        throw error;
+      }
+    };
+
 
   const handleGenerateCards = async () => {
     if (!apiKey) return alert('Error: REACT_APP_GOOGLE_AI_API_KEY no configurada');
@@ -126,24 +129,52 @@ IMPORTANTE:
     setIsGenerating(true);
     setGenerationProgress(0);
 
+    const progressInterval = setInterval(() => {
+      setGenerationProgress(prev => Math.min(prev + 10, 90));
+    }, 200);
+
     try {
-      const newCard = await generateAICard(newTopic, difficulty, numQuestions);
-      setStudyCards([...studyCards, newCard]);
-      alert(`¡Éxito! Se generaron ${newCard.questions.length} preguntas en una tarjeta sobre: ${newTopic}`);
-      setNewTopic('');
-      setShowGenerator(false);
+      const newCards = await generateAICards(newTopic, numQuestions);
+      setStudyCards([...studyCards, ...newCards]);
+      setGenerationProgress(100);
+      
+      const totalQuestions = newCards.reduce((sum, card) => sum + card.questions.length, 0);
+      setTimeout(() => {
+        alert(`¡Éxito! Se generaron 5 tarjetas sobre: ${newTopic} con ${totalQuestions} preguntas distribuidas (${Math.round((100/totalQuestions)*100)/100} puntos por pregunta)`);
+        setNewTopic('');
+        setShowGenerator(false);
+        clearInterval(progressInterval);
+      }, 500);
     } catch (error: any) {
       console.error(error);
-      alert('Error al generar la tarjeta: ' + error.message);
+      alert('Error al generar las tarjetas: ' + error.message);
+      clearInterval(progressInterval);
     } finally {
-      setIsGenerating(false);
-      setGenerationProgress(0);
+      setTimeout(() => {
+        setIsGenerating(false);
+        setGenerationProgress(0);
+      }, 1000);
     }
   };
 
   const startStudySession = () => {
-    if (studyCards.length === 0) return alert('Primero genera algunas preguntas de estudio');
+    if (studyCards.length === 0) return alert('Primero genera algunas tarjetas de estudio');
     setIsStudying(true);
+    setStudyingTopic(null);
+    setCurrentCardIndex(0);
+    setCurrentQuestionIndex(0);
+    setCardAnswers(new Map());
+    setShowResults(false);
+    setSelectedOption(null);
+    setShowExplanation(false);
+  };
+
+  const startTopicStudy = (topic: string) => {
+    const topicCards = studyCards.filter(card => card.topic === topic);
+    if (topicCards.length === 0) return;
+    
+    setIsStudying(true);
+    setStudyingTopic(topic);
     setCurrentCardIndex(0);
     setCurrentQuestionIndex(0);
     setCardAnswers(new Map());
@@ -153,18 +184,24 @@ IMPORTANTE:
   };
 
   const handleOptionSelect = (optionIndex: number) => {
-    const currentCard = studyCards[currentCardIndex];
+    const currentCards = studyingTopic 
+      ? studyCards.filter(card => card.topic === studyingTopic)
+      : studyCards;
+    const currentCard = currentCards[currentCardIndex];
     const currentQuestion = currentCard.questions[currentQuestionIndex];
+    
     if (cardAnswers.has(`${currentCard.id}-${currentQuestionIndex}`) || selectedOption !== null) return;
 
     setSelectedOption(optionIndex);
     const isCorrect = optionIndex === currentQuestion.correctAnswer;
+    const pointsEarned = isCorrect ? currentCard.pointsPerQuestion : 0;
 
     const newAnswer: CardAnswer = {
       cardId: currentCard.id,
       questionIndex: currentQuestionIndex,
       selectedOption: optionIndex,
       isCorrect,
+      pointsEarned,
     };
 
     const newCardAnswers = new Map(cardAnswers);
@@ -174,12 +211,16 @@ IMPORTANTE:
   };
 
   const nextQuestion = () => {
-    const currentCard = studyCards[currentCardIndex];
+    const currentCards = studyingTopic 
+      ? studyCards.filter(card => card.topic === studyingTopic)
+      : studyCards;
+    const currentCard = currentCards[currentCardIndex];
+      
     if (currentQuestionIndex + 1 < currentCard.questions.length) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setSelectedOption(null);
       setShowExplanation(false);
-    } else if (currentCardIndex + 1 < studyCards.length) {
+    } else if (currentCardIndex + 1 < currentCards.length) {
       setCurrentCardIndex(currentCardIndex + 1);
       setCurrentQuestionIndex(0);
       setSelectedOption(null);
@@ -191,6 +232,7 @@ IMPORTANTE:
 
   const restartStudy = () => {
     setIsStudying(false);
+    setStudyingTopic(null);
     setCurrentCardIndex(0);
     setCurrentQuestionIndex(0);
     setCardAnswers(new Map());
@@ -199,102 +241,301 @@ IMPORTANTE:
     setShowExplanation(false);
   };
 
-  const deleteCard = (cardId: string) => {
-    setStudyCards(studyCards.filter(card => card.id !== cardId));
+  const deleteTopicCards = (topic: string) => {
+    setStudyCards(studyCards.filter(card => card.topic !== topic));
   };
 
-  // Calcular porcentaje de progreso de una tarjeta
-  const getCardProgress = (card: StudyCard): number => {
-    const answeredQuestions = card.questions.filter((_, index) => 
-      cardAnswers.has(`${card.id}-${index}`)
-    ).length;
-    return Math.round((answeredQuestions / card.questions.length) * 100);
+  // Agrupar tarjetas por tema
+  const groupedCards = studyCards.reduce((acc, card) => {
+    if (!acc[card.topic]) {
+      acc[card.topic] = [];
+    }
+    acc[card.topic].push(card);
+    return acc;
+  }, {} as Record<string, StudyCard[]>);
+
+  // Calcular progreso por tema
+  const getTopicProgress = (topic: string): number => {
+    const topicCards = groupedCards[topic];
+    const totalQuestions = topicCards.reduce((sum, card) => sum + card.questions.length, 0);
+    const answeredQuestions = topicCards.reduce((sum, card) => {
+      return sum + card.questions.filter((_, index) => 
+        cardAnswers.has(`${card.id}-${index}`)
+      ).length;
+    }, 0);
+    return Math.round((answeredQuestions / totalQuestions) * 100);
   };
 
-  // Iniciar estudio de una tarjeta específica
-  const startSpecificCardStudy = (cardIndex: number) => {
-    setIsStudying(true);
-    setCurrentCardIndex(cardIndex);
-    setCurrentQuestionIndex(0);
-    setShowResults(false);
-    setSelectedOption(null);
-    setShowExplanation(false);
+  // Calcular calificación por tema
+  const getTopicGrade = (topic: string) => {
+    const topicCards = groupedCards[topic];
+    let totalPoints = 0;
+    let earnedPoints = 0;
+    let answeredQuestions = 0;
+    let correctAnswers = 0;
+    
+    topicCards.forEach(card => {
+      card.questions.forEach((_, index) => {
+        totalPoints += card.pointsPerQuestion;
+        const answer = cardAnswers.get(`${card.id}-${index}`);
+        if (answer) {
+          answeredQuestions++;
+          earnedPoints += answer.pointsEarned;
+          if (answer.isCorrect) correctAnswers++;
+        }
+      });
+    });
+    
+    return {
+      current: Math.round(earnedPoints * 100) / 100,
+      total: Math.round(totalPoints * 100) / 100,
+      percentage: totalPoints > 0 ? Math.round((earnedPoints / totalPoints) * 100) : 0,
+      answered: answeredQuestions,
+      totalQuestions: topicCards.reduce((sum, card) => sum + card.questions.length, 0),
+      correct: correctAnswers
+    };
   };
 
-  // ------------------ Vistas ------------------
+  // Calcular estadísticas detalladas de una tarjeta
+  const getCardStats = (card: StudyCard) => {
+    let earnedPoints = 0;
+    let totalPoints = 0;
+    let answeredQuestions = 0;
+    let correctAnswers = 0;
+    
+    card.questions.forEach((_, index) => {
+      totalPoints += card.pointsPerQuestion;
+      const answer = cardAnswers.get(`${card.id}-${index}`);
+      if (answer) {
+        answeredQuestions++;
+        earnedPoints += answer.pointsEarned;
+        if (answer.isCorrect) correctAnswers++;
+      }
+    });
+    
+    const completionPercentage = Math.round((answeredQuestions / card.questions.length) * 100);
+    const gradePercentage = totalPoints > 0 ? Math.round((earnedPoints / totalPoints) * 100) : 0;
+    
+    return {
+      earnedPoints: Math.round(earnedPoints * 100) / 100,
+      totalPoints: Math.round(totalPoints * 100) / 100,
+      answeredQuestions,
+      totalQuestions: card.questions.length,
+      correctAnswers,
+      completionPercentage,
+      gradePercentage,
+      isComplete: answeredQuestions === card.questions.length
+    };
+  };
 
+  // Función para obtener el color según la calificación
+  const getGradeColor = (percentage: number) => {
+    if (percentage >= 90) return 'text-green-600 bg-green-100';
+    if (percentage >= 75) return 'text-blue-600 bg-blue-100';
+    if (percentage >= 60) return 'text-yellow-600 bg-yellow-100';
+    return 'text-red-600 bg-red-100';
+  };
+
+  // Función para obtener letra de calificación
+  const getLetterGrade = (percentage: number) => {
+    if (percentage >= 90) return 'A';
+    if (percentage >= 80) return 'B';
+    if (percentage >= 70) return 'C';
+    if (percentage >= 60) return 'D';
+    return 'F';
+  };
+
+  // ---------- Vista de resultados ----------
+  if (showResults) {
+    const currentCards = studyingTopic 
+      ? studyCards.filter(card => card.topic === studyingTopic)
+      : studyCards;
+    
+    let totalPoints = 0;
+    let earnedPoints = 0;
+    let correctAnswers = 0;
+    let totalQuestions = 0;
+    
+    currentCards.forEach(card => {
+      card.questions.forEach((_, index) => {
+        totalQuestions++;
+        totalPoints += card.pointsPerQuestion;
+        const answer = cardAnswers.get(`${card.id}-${index}`);
+        if (answer) {
+          earnedPoints += answer.pointsEarned;
+          if (answer.isCorrect) correctAnswers++;
+        }
+      });
+    });
+    
+    const finalGrade = Math.round(earnedPoints * 100) / 100;
+    const percentage = Math.round((correctAnswers / totalQuestions) * 100);
+    const letterGrade = getLetterGrade(percentage);
+
+    return (
+      <div className="max-w-4xl mx-auto space-y-6 p-6 bg-white border-2 border-black rounded-xl">
+        <div className="text-center space-y-4">
+          <Trophy className="h-16 w-16 text-yellow-500 mx-auto" />
+          <h2 className="text-3xl font-bold text-black">
+            {studyingTopic ? `Resultados: ${studyingTopic}` : 'Sesión Completada'}
+          </h2>
+
+          <div className="bg-white border-2 border-black rounded-xl p-6 space-y-4">
+            <div className="flex items-center justify-center gap-4">
+              <div className="text-6xl font-bold text-yellow-600">{finalGrade}/100</div>
+              <div className="text-5xl font-bold px-6 py-3 rounded-lg bg-yellow-300 border-2 border-black text-black">
+                {letterGrade}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-xl text-black">
+                Calificación Final:{" "}
+                <span className="font-bold text-yellow-600">{finalGrade} puntos</span>
+              </p>
+              <p className="text-lg text-black">
+                {correctAnswers} de {totalQuestions} respuestas correctas ({percentage}%)
+              </p>
+              <p className="text-sm text-gray-700">
+                Cada pregunta correcta valía {currentCards[0]?.pointsPerQuestion || 0} puntos
+              </p>
+            </div>
+            
+            {/* Desglose por tarjeta */}
+            <div className="border-t-2 border-black pt-4 mt-4">
+              <h3 className="text-lg font-semibold mb-3 text-black">Desglose por Tarjeta:</h3>
+              <div className="grid grid-cols-5 gap-2">
+                {currentCards.map((card) => {
+                  const stats = getCardStats(card);
+                  return (
+                    <div 
+                      key={card.id} 
+                      className="p-3 bg-white border-2 border-black rounded-lg text-center"
+                    >
+                      <div className="text-sm font-bold text-black">Tarjeta #{card.cardNumber}</div>
+                      <div className="text-2xl font-bold text-yellow-600 mt-1">
+                        {stats.gradePercentage}%
+                      </div>
+                      <div className="text-xs text-gray-700 mt-1">
+                        {stats.correctAnswers}/{stats.totalQuestions} correctas
+                      </div>
+                      <div className="text-xs font-bold text-yellow-600">
+                        {stats.earnedPoints}/{stats.totalPoints} pts
+                      </div>
+                      {stats.isComplete && (
+                        <CheckCircle className="h-4 w-4 text-green-600 mx-auto mt-1" />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            
+            {/* Botones */}
+            <div className="flex justify-center gap-4 mt-6">
+              <button
+                onClick={restartStudy}
+                className="bg-yellow-400 border-2 border-black text-black py-3 px-6 rounded-lg font-semibold hover:bg-yellow-500 transition-colors"
+              >
+                Volver al Inicio
+              </button>
+              <button
+                onClick={() => {
+                  setShowResults(false);
+                  setCurrentCardIndex(0);
+                  setCurrentQuestionIndex(0);
+                  setSelectedOption(null);
+                  setShowExplanation(false);
+                }}
+                className="bg-white border-2 border-black text-black py-3 px-6 rounded-lg font-semibold hover:bg-yellow-100 transition-colors"
+              >
+                Estudiar de Nuevo
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+
+    // ---------- Vista del generador ----------
   if (showGenerator) {
     return (
-      <div className="max-w-2xl mx-auto space-y-6 p-6">
-        <button onClick={() => setShowGenerator(false)} className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors">
+      <div className="max-w-2xl mx-auto space-y-6 p-6 bg-white">
+        <button 
+          onClick={() => setShowGenerator(false)} 
+          className="flex items-center gap-2 text-black hover:text-yellow-600 transition-colors"
+        >
           <ChevronLeft className="h-5 w-5" /> Volver
         </button>
 
-        <div className="bg-white rounded-xl shadow-lg p-6 space-y-6">
-          <h2 className="text-2xl font-bold flex items-center gap-2 text-purple-600">
-            <Brain className="h-7 w-7" /> Generar Preguntas del Tema
+        <div className="bg-white rounded-xl shadow-lg p-6 space-y-6 border-black border">
+          <h2 className="text-2xl font-bold flex items-center gap-2 text-yellow-500">
+            <Brain className="h-7 w-7" /> Generar 5 Tarjetas de Estudio
           </h2>
 
           {!apiKey && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800">
+            <div className="bg-yellow-50 border border-black rounded-lg p-4 text-yellow-800">
               <p className="font-semibold">⚠️ Configuración requerida</p>
               <p className="text-sm mt-1">
-                Agrega <code className="bg-red-100 px-1 rounded">REACT_APP_GOOGLE_AI_API_KEY</code> a tu archivo .env y reinicia el servidor.
+                Agrega <code className="bg-yellow-100 px-1 rounded">REACT_APP_GOOGLE_AI_API_KEY</code> a tu archivo .env y reinicia el servidor.
               </p>
             </div>
           )}
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Tema específico</label>
+              <label className="block text-sm font-medium text-black mb-2">Tema específico</label>
               <input
                 type="text"
                 value={newTopic}
                 onChange={(e) => setNewTopic(e.target.value)}
                 placeholder="Ej: Revolución Francesa, Mitosis, React Hooks..."
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                className="w-full p-3 border border-black rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400"
                 disabled={isGenerating || !apiKey}
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Nivel de dificultad</label>
-                <select
-                  value={difficulty}
-                  onChange={(e) => setDifficulty(e.target.value as 'básico' | 'intermedio' | 'avanzado')}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                  disabled={isGenerating}
-                >
-                  <option value="básico">Básico</option>
-                  <option value="intermedio">Intermedio</option>
-                  <option value="avanzado">Avanzado</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Número de preguntas</label>
+                <label className="block text-sm font-medium text-black mb-2">Número de preguntas</label>
                 <select
                   value={numQuestions}
                   onChange={(e) => setNumQuestions(parseInt(e.target.value))}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  className="w-full p-3 border border-black rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400"
                   disabled={isGenerating}
                 >
-                  {[5, 10, 15, 20].map(num => (
+                  {[5, 10, 15, 20, 25, 30].map(num => (
                     <option key={num} value={num}>{num} preguntas</option>
                   ))}
                 </select>
               </div>
             </div>
 
+            <div className="bg-yellow-50 border border-black rounded-lg p-3">
+              <p className="text-yellow-700 text-sm mb-2">
+                <strong>Se generarán siempre 5 tarjetas</strong> con las {numQuestions} preguntas distribuidas entre ellas 
+                ({Math.floor(numQuestions/5)} - {Math.ceil(numQuestions/5)} preguntas por tarjeta).
+              </p>
+              <p className="text-yellow-600 text-xs font-medium">
+                📊 Cada pregunta correcta valdrá {Math.round((100 / numQuestions) * 100) / 100} puntos para una calificación total de 100.
+                <br />
+                🎲 Las dificultades (básico, intermedio, avanzado) se asignarán automáticamente a cada tarjeta.
+              </p>
+            </div>
+
             {isGenerating && (
               <div className="space-y-2">
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>Generando preguntas sobre {newTopic}...</span>
+                <div className="flex justify-between text-sm text-black">
+                  <span>Generando 5 tarjetas con {numQuestions} preguntas sobre {newTopic}...</span>
                   <span>{Math.round(generationProgress)}%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-300" style={{ width: `${generationProgress}%` }}></div>
+                  <div 
+                    className="bg-yellow-400 h-2 rounded-full transition-all duration-300" 
+                    style={{ width: `${generationProgress}%` }}
+                  ></div>
                 </div>
               </div>
             )}
@@ -302,15 +543,15 @@ IMPORTANTE:
             <button
               onClick={handleGenerateCards}
               disabled={!newTopic.trim() || !apiKey || isGenerating}
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 px-6 rounded-lg font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:from-purple-600 hover:to-pink-600 transition-all"
+              className="w-full bg-yellow-400 text-white py-3 px-6 rounded-lg font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-yellow-500 transition-all"
             >
               {isGenerating ? (
                 <>
-                  <Loader className="h-5 w-5 animate-spin" /> Generando {numQuestions} preguntas...
+                  <Loader className="h-5 w-5 animate-spin" /> Generando 5 Tarjetas...
                 </>
               ) : (
                 <>
-                  <Brain className="h-5 w-5" /> Generar {numQuestions} Preguntas
+                  <Brain className="h-5 w-5" /> Generar 5 Tarjetas con {numQuestions} Preguntas
                 </>
               )}
             </button>
@@ -322,50 +563,159 @@ IMPORTANTE:
 
   // ---------- Vista de estudio ----------
   if (isStudying && !showResults) {
-    const currentCard = studyCards[currentCardIndex];
+    const topicCards = studyingTopic
+      ? studyCards.filter(card => card.topic === studyingTopic)
+      : [];
+    const currentCard = topicCards[currentCardIndex];
     const currentQuestion = currentCard.questions[currentQuestionIndex];
-    const progress = ((currentCardIndex + currentQuestionIndex / currentCard.questions.length + 1) / studyCards.reduce((sum, c) => sum + c.questions.length, 0)) * 100;
+
+    // Calcular progreso total
+    const totalQuestionsStudied =
+      topicCards.slice(0, currentCardIndex).reduce((sum, card) => sum + card.questions.length, 0) +
+      currentQuestionIndex + 1;
+    const totalQuestions = topicCards.reduce((sum, card) => sum + card.questions.length, 0);
+    const progress = (totalQuestionsStudied / totalQuestions) * 100;
+
+    // Calcular calificación actual
+    let earnedPoints = 0;
+    topicCards.forEach(card => {
+      card.questions.forEach((_, index) => {
+        const answer = cardAnswers.get(`${card.id}-${index}`);
+        if (answer) {
+          earnedPoints += answer.pointsEarned;
+        }
+      });
+    });
+
+    // Calcular estadísticas de la tarjeta actual
+    const currentCardStats = getCardStats(currentCard);
 
     return (
-      <div className="max-w-2xl mx-auto space-y-6 p-6">
+      <div className="max-w-2xl mx-auto space-y-6 p-6 bg-white border-2 border-black rounded-xl">
         <div className="flex justify-between items-center">
-          <button onClick={restartStudy} className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors">
+          <button
+            onClick={restartStudy}
+            className="flex items-center gap-2 text-black border border-black px-3 py-1 rounded-lg hover:bg-yellow-300 transition-colors"
+          >
             <ChevronLeft className="h-5 w-5" /> Salir
           </button>
-          <span className="text-sm text-gray-500">
-            Pregunta {currentQuestionIndex + 1} de {currentCard.questions.length} (Tarjeta {currentCardIndex + 1} de {studyCards.length})
-          </span>
+
+          <div className="text-right">
+            <div className="text-sm text-black">
+              Tarjeta {currentCardIndex + 1} de {topicCards.length} - Pregunta{" "}
+              {currentQuestionIndex + 1} de {currentCard.questions.length}
+            </div>
+            <div className="text-sm font-bold text-yellow-600">
+              Calificación: {Math.round(earnedPoints * 100) / 100}/100 pts
+            </div>
+            {studyingTopic && (
+              <div className="text-xs text-gray-500">{studyingTopic}</div>
+            )}
+          </div>
         </div>
 
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
-          <div className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }}></div>
+        {/* Selector de tarjetas */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-black mb-1">
+            Selecciona tarjeta
+          </label>
+          <select
+            className="w-full border-2 border-black rounded-lg p-2 bg-white"
+            value={currentCardIndex}
+            onChange={(e) => {
+              setCurrentCardIndex(parseInt(e.target.value));
+              setCurrentQuestionIndex(0);
+            }}
+          >
+            {topicCards.map((card, idx) => (
+              <option key={card.id} value={idx}>
+                Tarjeta #{card.cardNumber}
+              </option>
+            ))}
+          </select>
         </div>
 
-        <div className="bg-white rounded-xl shadow-lg p-6 space-y-6">
+        {/* Barra de progreso */}
+        <div className="w-full bg-gray-200 border border-black rounded-full h-2 mb-6">
+          <div
+            className="bg-yellow-400 h-2 rounded-full transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          ></div>
+        </div>
+
+        {/* Indicador de progreso de tarjeta actual */}
+        <div className="bg-yellow-50 border-2 border-black rounded-lg p-3 mb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Award className="h-5 w-5 text-yellow-600" />
+              <span className="text-sm font-medium text-black">
+                Tarjeta #{currentCard.cardNumber}
+              </span>
+              <span
+                className={`px-2 py-1 rounded text-xs font-bold border border-black`}
+              >
+                {currentCardStats.gradePercentage}%
+              </span>
+            </div>
+            <div className="text-sm text-black">
+              {currentCardStats.correctAnswers}/{currentCardStats.answeredQuestions} correctas •{" "}
+              <span className="font-bold text-yellow-600 ml-1">
+                {currentCardStats.earnedPoints}/{currentCardStats.totalPoints} pts
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Contenedor principal */}
+        <div className="bg-white border-2 border-black rounded-xl shadow-lg p-6 space-y-6">
           <div className="text-center">
-            <span className="inline-block bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium mb-4">
-              {currentCard.topic} • {currentCard.difficulty}
-            </span>
-            <h3 className="text-xl font-semibold text-gray-800 mb-6">{currentQuestion.question}</h3>
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <span className="bg-yellow-100 text-black border border-black px-3 py-1 rounded-full text-sm font-medium">
+                {currentCard.topic}
+              </span>
+              <span className="bg-gray-100 text-black border border-black px-2 py-1 rounded-full text-sm">
+                Tarjeta #{currentCard.cardNumber}
+              </span>
+              <span className="bg-yellow-200 text-black border border-black px-2 py-1 rounded-full text-sm">
+                {currentCard.difficulty}
+              </span>
+              <span className="bg-yellow-300 text-black border border-black px-2 py-1 rounded-full text-xs font-bold">
+                Vale {currentCard.pointsPerQuestion} pts
+              </span>
+            </div>
+            <h3 className="text-xl font-semibold text-black mb-6">
+              {currentQuestion.question}
+            </h3>
           </div>
 
           <div className="space-y-3">
             {currentQuestion.options.map((option, index) => {
-              let buttonClass = "w-full text-left p-4 border-2 rounded-lg transition-all hover:border-purple-300";
+              let buttonClass =
+                "w-full text-left p-4 border-2 border-black rounded-lg transition-all";
               if (selectedOption !== null) {
                 if (index === currentQuestion.correctAnswer) {
-                  buttonClass += " border-green-500 bg-green-50 text-green-700";
-                } else if (index === selectedOption && index !== currentQuestion.correctAnswer) {
-                  buttonClass += " border-red-500 bg-red-50 text-red-700";
+                  buttonClass += " bg-green-200 text-black";
+                } else if (
+                  index === selectedOption &&
+                  index !== currentQuestion.correctAnswer
+                ) {
+                  buttonClass += " bg-red-200 text-black";
                 } else {
-                  buttonClass += " border-gray-200 bg-gray-50 text-gray-600";
+                  buttonClass += " bg-gray-100 text-black";
                 }
               } else {
-                buttonClass += " border-gray-200 hover:bg-purple-50";
+                buttonClass += " hover:bg-yellow-100";
               }
               return (
-                <button key={index} onClick={() => handleOptionSelect(index)} disabled={selectedOption !== null} className={buttonClass}>
-                  <span className="font-medium mr-3">{String.fromCharCode(65 + index)}.</span>
+                <button
+                  key={index}
+                  onClick={() => handleOptionSelect(index)}
+                  disabled={selectedOption !== null}
+                  className={buttonClass}
+                >
+                  <span className="font-medium mr-3">
+                    {String.fromCharCode(65 + index)}.
+                  </span>
                   {option}
                 </button>
               );
@@ -373,11 +723,34 @@ IMPORTANTE:
           </div>
 
           {showExplanation && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
-              <h4 className="font-semibold text-blue-800 mb-2">Explicación:</h4>
-              <p className="text-blue-700">{currentQuestion.explanation}</p>
-              <button onClick={nextQuestion} className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors">
-                {currentQuestionIndex + 1 >= currentCard.questions.length && currentCardIndex + 1 >= studyCards.length ? 'Ver Resultados' : 'Siguiente Pregunta'}
+            <div className="bg-yellow-50 border-2 border-black rounded-lg p-4 mt-4">
+              <h4 className="font-semibold text-black mb-2">Explicación:</h4>
+              <p className="text-black">{currentQuestion.explanation}</p>
+              {selectedOption === currentQuestion.correctAnswer ? (
+                <div className="mt-3">
+                  <div className="flex items-center justify-center gap-2 p-3 bg-green-200 border border-black rounded">
+                    <CheckCircle className="h-5 w-5 text-green-800" />
+                    <span className="font-bold text-black">
+                      ¡Correcto! +{currentCard.pointsPerQuestion} puntos
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-3">
+                  <div className="flex items-center justify-center gap-2 p-3 bg-red-200 border border-black rounded">
+                    <XCircle className="h-5 w-5 text-red-800" />
+                    <span className="font-bold text-black">Incorrecto. 0 puntos</span>
+                  </div>
+                </div>
+              )}
+              <button
+                onClick={nextQuestion}
+                className="mt-4 w-full bg-yellow-400 border-2 border-black text-black py-2 px-4 rounded-lg hover:bg-yellow-500 transition-colors font-bold"
+              >
+                {currentQuestionIndex + 1 >= currentCard.questions.length &&
+                currentCardIndex + 1 >= topicCards.length
+                  ? "Ver Resultados Finales"
+                  : "Siguiente Pregunta →"}
               </button>
             </div>
           )}
@@ -386,126 +759,112 @@ IMPORTANTE:
     );
   }
 
+
   // ---------- Vista principal ----------
   return (
-    <div className="max-w-4xl mx-auto space-y-6 p-6">
+    <div className="max-w-4xl mx-auto space-y-6 p-6 bg-white">
       <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+        <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-600">
           🧠 Tarjetas de Estudio con IA
         </h1>
         <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-          Crea tarjetas de estudio personalizadas con IA. Cada tarjeta puede tener entre 5 y 20 preguntas sobre cualquier tema con explicaciones detalladas.
+          Crea exactamente 5 tarjetas de estudio con IA por tema. Las preguntas se distribuyen equitativamente entre las 5 tarjetas.
+          <span className="block mt-2 text-yellow-500 font-medium">
+            🎯 Sistema de calificación: Cada pregunta correcta suma puntos para llegar a 100%.
+          </span>
+          <span className="block mt-1 text-gray-500 text-sm">
+            🎲 Las dificultades se asignan automáticamente a cada tarjeta: básico, intermedio o avanzado.
+          </span>
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl shadow-lg p-6">
+      <div className="grid justify-center gap-6">
+        {/* Card Crear */}
+        <div className="bg-white rounded-xl shadow-lg p-6 border-black border">
           <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <Plus className="h-6 w-6 text-purple-500" /> Crear Preguntas
+            <Plus className="h-6 w-6 text-yellow-500" /> Crear Tarjetas
           </h2>
           <p className="text-gray-600 mb-4">
-            Genera varias preguntas dentro de una sola tarjeta usando IA sobre cualquier tema.
+            Genera siempre 5 tarjetas de estudio sobre cualquier tema. Las dificultades se asignan aleatoriamente y cada pregunta correcta suma puntos.
           </p>
-          <button onClick={() => setShowGenerator(true)} className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 px-6 rounded-lg font-semibold flex items-center justify-center gap-2 hover:from-purple-600 hover:to-pink-600 transition-all">
-            <Brain className="h-5 w-5" /> Generar con IA
-          </button>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <Play className="h-6 w-6 text-blue-500" /> Estudiar
-          </h2>
-          <p className="text-gray-600 mb-4">Practica con tus tarjetas generadas y obtén estadísticas de tu rendimiento.</p>
-          <button onClick={startStudySession} disabled={studyCards.length === 0} className="w-full bg-blue-500 text-white py-3 px-6 rounded-lg font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors">
-            <Play className="h-5 w-5" /> Empezar Estudio ({studyCards.length} tarjetas)
+          <button 
+            onClick={() => setShowGenerator(true)} 
+            className="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 text-white py-3 px-6 rounded-lg font-semibold flex items-center justify-center gap-2 hover:from-yellow-500 hover:to-yellow-600 transition-all"
+          >
+            <Brain className="h-5 w-5" /> Generar 5 Tarjetas
           </button>
         </div>
       </div>
 
-      {studyCards.length > 0 && (
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <h3 className="text-lg font-semibold mb-4">Tus Tarjetas de Estudio ({studyCards.length})</h3>
-          <div className="grid gap-4">
-            {studyCards.map((card, index) => {
-              const progress = getCardProgress(card);
-              const answeredCount = card.questions.filter((_, qIndex) => 
-                cardAnswers.has(`${card.id}-${qIndex}`)
-              ).length;
-              
-              return (
-                <div key={card.id} className="border border-gray-200 rounded-lg p-4 hover:border-purple-300 transition-colors">
-                  <div className="flex justify-between items-start mb-3">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm font-medium">{card.topic}</span>
-                        <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-sm">{card.difficulty}</span>
-                        <span className={`px-2 py-1 rounded text-sm font-medium ${
-                          progress === 100 ? 'bg-green-100 text-green-800' : 
-                          progress > 0 ? 'bg-yellow-100 text-yellow-800' : 
-                          'bg-gray-100 text-gray-700'
-                        }`}>
-                          {progress}% completado
+      {/* Tabla de progreso por temas */}
+      {Object.keys(groupedCards).length > 0 && (
+        <div className="bg-white rounded-xl shadow-lg p-6 border-black border md:col-span-2">
+          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+            <Star className="h-6 w-6 text-yellow-500" /> Progreso por Tema
+          </h2>
+
+          <div className="overflow-x-auto">
+            <table className="min-w-full border-2 border-black rounded-lg overflow-hidden">
+              <thead className="bg-yellow-100 border-b-2 border-black">
+                <tr>
+                  <th className="px-4 py-2 text-left text-sm font-bold text-black border-r-2 border-black">Tema</th>
+                  <th className="px-4 py-2 text-center text-sm font-bold text-black border-r-2 border-black">Progreso</th>
+                  <th className="px-4 py-2 text-center text-sm font-bold text-black border-r-2 border-black">Correctas</th>
+                  <th className="px-4 py-2 text-center text-sm font-bold text-black border-r-2 border-black">Calificación</th>
+                  <th className="px-4 py-2 text-center text-sm font-bold text-black">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.keys(groupedCards).map((topic) => {
+                  const progress = getTopicProgress(topic);
+                  const grade = getTopicGrade(topic);
+                  return (
+                    <tr key={topic} className="border-b border-black">
+                      <td className="px-4 py-2 font-medium text-black border-r border-black">{topic}</td>
+                      <td className="px-4 py-2 text-center text-black border-r border-black">
+                        <div className="w-full bg-gray-200 rounded-full h-2 mb-1">
+                          <div
+                            className="bg-yellow-400 h-2 rounded-full"
+                            style={{ width: `${progress}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-xs text-gray-600">{progress}%</span>
+                      </td>
+                      <td className="px-4 py-2 text-center text-black border-r border-black">
+                        {grade.correct}/{grade.totalQuestions}
+                      </td>
+                      <td className="px-4 py-2 text-center border-r border-black">
+                        <span
+                          className={`px-2 py-1 rounded text-sm font-bold ${getGradeColor(
+                            grade.percentage
+                          )}`}
+                        >
+                          {grade.percentage}% ({getLetterGrade(grade.percentage)})
                         </span>
-                      </div>
-                      <div className="flex items-center gap-3 mb-2">
-                        <p className="text-gray-700 font-medium">
-                          Preguntas: {answeredCount}/{card.questions.length}
-                        </p>
-                        {progress === 100 && (
-                          <CheckCircle className="h-5 w-5 text-green-500" />
-                        )}
-                      </div>
-                      
-                      {/* Barra de progreso */}
-                      <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
-                        <div 
-                          className={`h-2 rounded-full transition-all duration-300 ${
-                            progress === 100 ? 'bg-green-500' : 'bg-gradient-to-r from-purple-500 to-pink-500'
-                          }`}
-                          style={{ width: `${progress}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                    <button 
-                      onClick={() => deleteCard(card.id)} 
-                      className="text-red-500 hover:text-red-700 transition-colors ml-4"
-                    >
-                      <XCircle className="h-5 w-5" />
-                    </button>
-                  </div>
-                  
-                  {/* Botón para estudiar esta tarjeta específica */}
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => startSpecificCardStudy(index)}
-                      className="flex-1 bg-blue-500 text-white py-2 px-4 rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-blue-600 transition-colors"
-                    >
-                      <Play className="h-4 w-4" />
-                      {progress === 0 ? 'Comenzar' : progress === 100 ? 'Repasar' : 'Continuar'}
-                    </button>
-                    {progress > 0 && progress < 100 && (
-                      <button
-                        onClick={() => {
-                          // Reiniciar progreso de esta tarjeta específica
-                          const newCardAnswers = new Map(cardAnswers);
-                          card.questions.forEach((_, qIndex) => {
-                            newCardAnswers.delete(`${card.id}-${qIndex}`);
-                          });
-                          setCardAnswers(newCardAnswers);
-                        }}
-                        className="bg-gray-500 text-white py-2 px-3 rounded-lg hover:bg-gray-600 transition-colors"
-                        title="Reiniciar progreso de esta tarjeta"
-                      >
-                        <RotateCcw className="h-4 w-4" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
+                      </td>
+                      <td className="px-4 py-2 text-center flex justify-center gap-2">
+                        <button
+                          onClick={() => startTopicStudy(topic)}
+                          className="bg-yellow-400 border-2 border-black text-black px-3 py-1 rounded-lg text-sm font-semibold hover:bg-yellow-500 transition"
+                        >
+                          <Play className="h-4 w-4 inline-block mr-1" /> Estudiar
+                        </button>
+                        <button
+                          onClick={() => deleteTopicCards(topic)}
+                          className="bg-red-400 border-2 border-black text-white px-3 py-1 rounded-lg text-sm font-semibold hover:bg-red-500 transition"
+                        >
+                          <XCircle className="h-4 w-4 inline-block mr-1" /> Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
+
     </div>
   );
 }
