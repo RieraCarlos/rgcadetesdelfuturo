@@ -1,33 +1,101 @@
 // src/components/HeroSection.tsx
-import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import Fondo from '../../img/fondo13.jpg';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel"
+import Fondo1 from '../../img/Fondo1.jpg';
+import Fondo2 from '../../img/Fondo2.jpg';
+import Fondo3 from '../../img/Fondo3.jpg';
+import Fondo4 from '../../img/Fondo4.jpg';
+import Fondo5 from '../../img/Fondo5.jpg';
+import Fondo6 from '../../img/Fondo6.jpg';
+import Fondo7 from '../../img/Fondo7.jpg';
+
+import Autoplay from "embla-carousel-autoplay"
 
 const HeroSection: React.FC = () => {
+  const images = [Fondo1, Fondo2, Fondo3, Fondo4, Fondo5, Fondo6, Fondo7];
+  const textItems = [
+    {
+      line2: "Transformación Integral: Forje Liderazgo, Disciplina y Resiliencia para el Siglo XXI.",
+    },
+    {
+      line2: " El programa innovador que combina la disciplina con las competencias digitales esenciales para jóvenes de 8 a 17 años.",
+    },
+    {
+      line2: "Desarrolla habilidades físicas y mentales que te servirán toda la vida. ¡Inscríbete ya!",
+    },
+    {
+      line2: "¡Transforme la Indecisión en Liderazgo: Disciplina y Tecnología de Vanguardia para el Futuro de su Hijo!",
+    },
+    {
+      line2: "¡Asegure Su Cupo! Inicie la Formación Ahora.",
+    }
+  ];
   return (
-    <div className="min-h-screen text-white">
-      {/* Navigation Bar */}
-      <nav className="p-4 border-2 border-white rounded-xl mx-4 my-2 sm:mx-6 sm:my-4 md:mx-12 md:my-6 flex justify-center items-center">
-        <span className="text-xl md:text-2xl font-bold">Nav</span>
-      </nav>
-
-      {/* Main Content Area */}
-      <div className="relative flex flex-col items-center justify-center p-4 sm:p-6 md:p-12">
-        {/* Background Image with Overlay:absolute inset-0 bg-cover bg-center bg-[url( '../../img/fondo13.jpg') ] rounded-xl */}
-        <div className="backtoNav">
-          <div className="absolute inset-0 bg-black opacity-50"></div>
+    <div className="relative flex justify-center h-[95vh]">
+      <Carousel 
+        className="h-full w-full absolute"
+        plugins={[
+          Autoplay({
+            delay: 4500,
+          }),
+        ]}>
+        <CarouselContent>
+          {images.map((image, index) => (
+            <CarouselItem key={index} >
+              <div className='h-[95vh] bg-amber-200'>
+                <img src={image} alt={`Slide ${index + 1}`} className='w-full object-cover' />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <div className="absolute inset-x-0 bottom-0 h-[95%] bg-gradient-to-t from-black to-transparent"></div>
+      </Carousel>
+      <div className='relative flex flex-col  w-[85%] justify-between mt-8'>
+        {/* NAV */}
+        <div className='bg-black rounded-full px-6 h-15 flex w-full items-center'>
+          <div className='flex justify-between w-full text-white'>
+            <div className='flex items-center'>
+              <span className='text-xl font-extrabold text-[#8d8159] opacity-30 hover:opacity-100'>rg technology</span>
+            </div>  
+            <div className='space-x-4 font-bold text-white text-base'>
+              <a href="" className='hover:text-[#8d8159]'>Productos</a>
+              <a href="" className='hover:text-[#8d8159]'>Nosotros</a>
+              <a href="" className='hover:text-[#8d8159]'>Contactanos</a>
+              <Button className='bg-transparent text-[#8d8159] font-bold text-lg hover:bg-[#8d8159] hover:text-black'>
+                <a href="" className=' '>Login</a>
+              </Button>
+            </div>
+          </div>
         </div>
-
-        {/* Text and Button Card */}
-        <Card className="z-10 bg-gray-800 bg-opacity-80 p-6 md:p-8 rounded-xl border-2 border-white max-w-sm sm:max-w-md md:max-w-lg">
-          <CardContent className="flex flex-col items-center justify-center space-y-6">
-            <span className="text-3xl sm:text-4xl font-extrabold text-center">Text</span>
-            <Button className="bg-orange-600 hover:bg-orange-700 font-semibold text-lg">
-              Boton
-            </Button>
-          </CardContent>
-        </Card>
+        {/* TEXT */}
+        <div className='text-right h-[30%] flex flex-col text-white items-end'>
+          <p className='text-6xl font-extrabold'>Curso de <span className='text-[#8d8159]'>Cadetes del futuro</span></p>
+          <Carousel
+                opts={{
+                    align: "start",
+                    loop: true,
+                }}
+                plugins={[
+                    Autoplay({
+                      delay: 4500,
+                    }),
+                  ]}
+                  className="w-full"
+            >
+                <CarouselContent>
+                    {textItems.map((text, index) => (
+                        <CarouselItem key={index} className="text-right">
+                            <p className='w-[65%] text-xl ml-auto'>{text.line2}</p>
+                        </CarouselItem>
+                    ))}
+                </CarouselContent>
+            </Carousel>
+          {/*<p className='w-[65%] text-xl'>Para niños de 8 años hasta jóvenes de 17 años, preparándolos para afrontar desafíos con carácter, compromiso e innovación</p>*/}
+        </div>
       </div>
     </div>
   );

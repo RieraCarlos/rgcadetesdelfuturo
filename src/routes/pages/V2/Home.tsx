@@ -10,30 +10,36 @@ import HorizontalScroll from "@/components/ElementsHome/ElementCinco";
 import TestimonialsScroll from "@/components/ElementsHome/Testimonios";
 import ScrollVelocity from '../../../hooks/gsap/ScrollVelocity';
 import Empresas from "@/components/ElementsHome/Empresas";
-
+import ElementCmejores from "@/components/ElementsHome/ElementCmejores";
+import ElementoSeis from "@/components/ElementsHome/ElementSeis";
+import FormContactanos from "@/components/ElementsHome/FormContactanos";
 export default function Home() {
     const navigate = useNavigate();
     return (
         <>
-            <Element1/>
+            <HeroSection/>
             <ContentSection/>
             <HorizontalScroll/>
+            <ElementCmejores/>
             <ScrollVelocity
                 texts={['Disciplina - Lealtad - Profesionalismo -', 'Honor - Valor - Patriotismo -']} 
                 velocity={100} 
-                className="custom-scroll-text text-white opacity-15"
+                className="custom-scroll-text text-[#242424] font-extrabold"
             />
             <CenteredContent/>
             <CourseView/>
-            <div className="flex flex-col">
-                <span className="text-[#ffcc01] text-5xl font-bold text-center mb-12 opacity-45">Empresas que apoyan el curso</span>
+            <div className="flex flex-col mb-25">
+                <span className="text-[#8d8159] text-5xl font-extrabold text-center mb-12">Marcas que nos apoyan</span>
                 <ScrollVelocity
-                    texts={['Start Good', '']} 
+                    texts={['rg technology', 'ssedee']} 
                     velocity={100} 
-                    className="custom-scroll-text text-white opacity-15"
+                    className="custom-scroll-text text-white opacity-15 h-25"
                 />
             </div>
+            <ElementoSeis/>
+            <FormContactanos/>
             <TestimonialsScroll/>
+
             <ContactSection/>
         </>
         

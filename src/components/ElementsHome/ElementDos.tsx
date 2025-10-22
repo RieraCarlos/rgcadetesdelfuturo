@@ -11,10 +11,23 @@ const ContentSection: React.FC = () => {
       <div className="flex flex-col md:flex-row md:space-x-6 space-y-6 md:space-y-0 items-stretch">
         {/* Contenido 1 */}
         <div className="flex-1s bg-transparent text-white border-none max-w-1/2">
-          <div className="flex items-center justify-center p-8 h-full">
+          <div className="flex items-start justify-center p-8 h-full flex-col">
             <SplitText
-              text="“El 65% de los jóvenes pasa más de 6 horas al día frente a pantallas, pero menos del 10% utiliza ese tiempo para aprender habilidades”."
-              className="text-2xl font-semibold text-center"
+              text="¿Sabías que..."
+              className="text-5xl font-bold text-center text-[#8d8159]"
+              delay={10}
+              duration={2.5}
+              ease="elastic.out(1,0.3)"
+              splitType="words, chars"
+              from={{ opacity: 0, y: 40 }}
+              to={{ opacity: 1, y: -7 }}
+              threshold={0.1}
+              rootMargin="0"
+              textAlign="left"
+            />
+            <SplitText
+              text="más del 70% de los jóvenes llegan a la adultez sin la disciplina personal ni las competencias digitales que demanda el mundo actual?"
+              className="text-2xl font-semibold text-center   "
               delay={10}
               duration={2.5}
               ease="elastic.out(1,0.3)"
@@ -35,22 +48,22 @@ const ContentSection: React.FC = () => {
                     delay={5000}
                     pauseOnHover={false}
                 >
-                    <Card>
-                        <h3>⚪ sobreexposición a <span className='font-bold text-[#ffcc01]'>pantallas</span></h3>
+                    <Card >
+                        <h3>⚪ Niños y jóvenes que carecen de <span className='font-bold text-[#8d8159]'>rutinas efectivas</span> y <span className='font-bold text-[#8d8159]'>resiliencia</span></h3>
                         <div className='h-full flex items-center justify-center'>
-                            <img src="https://noticias.udec.cl/wp-content/uploads/2025/08/Freepik-ninos-sentados-con-dispositivos-1024x683.jpg" alt="Niños/as en pantallas" />
+                            <img src="https://i.blogs.es/c46bf3/chico-triste-siendo-intimidado-tiro-medio/840_560.jpeg" alt="Niños/as en pantallas" className='rounded-xl'/>
                         </div>
                     </Card>
                     <Card>
-                        <h3>⚪ comportamiento <span className='font-bold text-[#ffcc01]'>desafiante</span></h3>
+                        <h3>⚪ Falta de conocimientos en <span className='font-bold text-[#8d8159]'>ética digital</span> y <span className='font-bold text-[#8d8159]'>finanzas personales</span></h3>
                         <div className='h-full flex items-center justify-center'>
-                          <img src="https://www.amalgama7.com/wp-content/uploads/2025/07/TND-2048x1363-1.jpg" alt="" />
+                          <img src="https://www.caixabank.com/docs/contentmedia/52026/De-criptomonedas-a-influencers-finanzas-digitales-para-ninos.png" className='rounded-xl' alt="" />
                         </div>
                     </Card>
                     <Card>
-                        <h3>⚪ <span className='font-bold text-[#ffcc01]'>dificultades</span> en el aprendizaje</h3>
+                        <h3>⚪ Limitaciones en su <span className='font-bold text-[#8d8159]'>desarrollo académico</span></h3>
                         <div className='h-full flex items-center justify-center'>
-                          <img src="https://www.altamed.org/sites/default/files/2023-07/homework.jpg" alt="" />
+                          <img src="https://www.altamed.org/sites/default/files/2023-07/homework.jpg" alt="" className='rounded-xl'/>
                         </div>
                     </Card>
                 </CardSwap>

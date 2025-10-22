@@ -27,7 +27,7 @@ export default function Nav() {
                             <li><Link to="/index.html" className="link-item">El Coca</Link></li>
                             <li><Link to="/index.html" className="link-item">La Joya de los Sachas</Link></li>
                     </ul>
-                    <button className="bg-white px-5 py-1 rounded-xl"><Link to="/login">Iniciar sesion</Link></button>    
+                    <button className="bg-white px-5 py-1 rounded-xl"><Link to="/seccion/login">Iniciar sesion</Link></button>    
                 </div>
             </div>
             

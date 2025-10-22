@@ -17,6 +17,7 @@ import {
   IconSearch,
   IconSettings,
   IconUsers,
+  IconUserBolt,
 } from "@tabler/icons-react"
 
 import { type NavDocumentItem, NavDocuments } from "./nav-documents"
@@ -44,6 +45,7 @@ const data = {
     { title: "Registro de matriculas", url: "#", icon: IconListDetails },
     { title: "Seguimiento de pagos", url: "#", icon: IconChartBar },
     { title: "Seguimiento de estudiantes", url: "#", icon: IconUsers },
+    { title: "Registro de instructores", url: "#", icon: IconUserBolt },
   ],
   navSecondary: [
     { title: "Configuraciones", url: "#", icon: IconSettings },
@@ -97,7 +99,7 @@ export function AppSidebar({
             >
               <a href="#">
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Start Good</span>
+                <span className="text-base font-semibold">rg technology</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

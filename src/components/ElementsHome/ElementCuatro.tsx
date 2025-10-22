@@ -14,7 +14,7 @@ const CenteredContent: React.FC = () => {
           sentence="Nuestro enfoque"
           manualMode={false}
           blurAmount={5}
-          borderColor="yellow"
+          borderColor="#46412d"
           animationDuration={1.5}
           pauseBetweenAnimations={1}
         />
@@ -27,10 +27,9 @@ const CenteredContent: React.FC = () => {
       
       {/* Contenedor de los textos */}
       <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-8 text-center w-full justify-evenly">
-        <span className="text-lg md:text-xl font-bold underline">Comunidad colaborativa</span>
-        <span className="text-lg md:text-xl font-bold underline">Disciplina formativa</span>
-        <span className="text-lg md:text-xl font-bold underline">Liderazgo para la vida</span>
-        <span className="text-lg md:text-xl font-bold underline">Plataforma virtual</span>
+        <span className="text-lg md:text-2xl font-extrabold">Disciplina Integral y Salud Mental</span>
+        <span className="text-lg md:text-2xl font-extrabold">Liderazgo y Competencia Social</span>
+        <span className="text-lg md:text-2xl font-extrabold">Futuro Digital y Financiero</span>
       </div>
 
     </div>
