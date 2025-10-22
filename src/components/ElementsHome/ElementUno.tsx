@@ -6,12 +6,12 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel"
 import Fondo1 from '../../img/Fondo1.jpg';
-import Fondo2 from '../../img/Fondo2.jpg';
-import Fondo3 from '../../img/Fondo3.jpg';
-import Fondo4 from '../../img/Fondo4.jpg';
-import Fondo5 from '../../img/Fondo5.jpg';
-import Fondo6 from '../../img/Fondo6.jpg';
-import Fondo7 from '../../img/Fondo7.jpg';
+import Fondo2 from '../../img/fondo2.jpg';
+import Fondo3 from '../../img/fondo3.jpg';
+import Fondo4 from '../../img/fondo4.jpg';
+import Fondo5 from '../../img/fondo5.jpg';
+import Fondo6 from '../../img/fondo6.jpg';
+import Fondo7 from '../../img/fondo7.jpg';
 
 import Autoplay from "embla-carousel-autoplay"
 
