@@ -1,3 +1,4 @@
+{/*
 import React from "react";
 import { useState, useEffect } from "react";
 import fondo1 from "../img/fondo11.jpg";
@@ -69,3 +70,4 @@ export default function Element3() {
       </div>
     );
 }
+    */}

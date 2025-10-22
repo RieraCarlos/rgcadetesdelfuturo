@@ -1,3 +1,4 @@
+{/*}
 import React, {useState} from "react";
 import IconAsesor from "../img/asesor.png";
 import FotoCoca from "../img/fondo12.jpg"
@@ -47,3 +48,4 @@ export default function Sedes() {
         </div>
     );
 };
+*/}

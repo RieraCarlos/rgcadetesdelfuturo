@@ -1,10 +1,10 @@
 // src/components/HorizontalScroll.tsx
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import fondo2 from '../../img/fondo1.jpg';
-import fondo3 from '../../img/Fondo8.jpg';
-import fondo4 from '../../img/Fondo9.jpg';
-import fondo5 from '../../img/Fondo11.jpg';
+import fondo2 from '../../img/Fondo1.jpg';
+import fondo3 from '../../img/fondo8.jpg';
+import fondo4 from '../../img/fondo9.jpg';
+import fondo5 from '../../img/fondo11.jpg';
 import RotatingText from '../../hooks/gsap/RotatingText'
 
 
