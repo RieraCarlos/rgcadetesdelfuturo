@@ -1,3 +1,4 @@
+{/*}
 import React from "react";
 import Nav from "../../../components/nav";
 import Footer from "../../../components/footer";
@@ -114,7 +115,7 @@ export default function SedeLagoAgrio() {
                         <span>Orden</span>
                         <span>Comando</span>
                         <span>Jerarquía</span>
-                        {/* */}
+                        
                         <span>Disciplina</span>
                         <span>Honor</span>
                         <span>Lealtad</span>
@@ -146,3 +147,4 @@ export default function SedeLagoAgrio() {
         </div>
     )
 }
+    */}

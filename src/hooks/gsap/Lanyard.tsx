@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import Soldado1 from "../../img/soldado1.png";
+import Soldado1 from "../../img/Soldado1.png";
 
 
 // Colores definidos:
