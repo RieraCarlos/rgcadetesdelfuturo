@@ -1,3 +1,4 @@
+{/*}
 import React from "react";
 import IconAsesora from "../../img/asesora.png";
 import IconAsesor from "../../img/asesor.png";
@@ -30,3 +31,4 @@ export default function SedeLago() {
         </div>
     )
 }
+    */}

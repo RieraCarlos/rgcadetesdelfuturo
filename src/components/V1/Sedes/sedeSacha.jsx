@@ -1,6 +1,6 @@
+{/*}
 import React from "react";
 import IconAsesora from "../../img/asesora.png";
-import FotoCoca from "../../img/fondo13.jpg"
 
 export default function SedeSacha() {
     return (
@@ -24,3 +24,5 @@ export default function SedeSacha() {
         </div>
     )
 }
+    */}
+    

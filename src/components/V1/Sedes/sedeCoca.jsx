@@ -1,3 +1,4 @@
+{/*
 import React from "react";
 import IconAsesora from "../../img/asesora.png";
 import FotoCoca from "../../img/fondo12.jpg"
@@ -24,3 +25,5 @@ export default function SedeCoca() {
         </div>  
     )
 }   
+    */}
+    
