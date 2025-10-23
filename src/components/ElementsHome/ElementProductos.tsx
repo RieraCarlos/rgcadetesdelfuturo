@@ -52,7 +52,7 @@ const productos: Producto[] = [
     imagen: Producto3,
   },
   {
-    id: 3,
+    id: 4,
     nombre: 'Proximamente: SuperBen',
     caracteristicas: [
       'Motivación y Reconocimiento',
@@ -76,16 +76,16 @@ const ElementProductos: FC = () => {
   }, []);
 
   return (
-    <section style={{ backgroundColor: '#000000' }} className=" text-white overflow-hidden mb-10">
-      <div className="container mx-auto px-4">
+    <section style={{ backgroundColor: '#000000' }} className=" text-white overflow-hidden">
+      <div className=" h-[100vh] mx-auto px-4">
         <h2 
           style={{ color: '#FFFFFF' }} 
-          className="text-2xl md:text-3xl font-extrabold text-center mb-8"
+          className="text-4xl md:text-5xl font-extrabold text-center mb-8"
         >
           Producto gratis por ser parte del curso
         </h2>
 
-        <div className="relative h-96 md:h-[20rem] w-full max-w-5xl mx-auto ">
+        <div className="relative h-auto min-h-96 md:min-h-[20rem] w-full max-w-5xl mx-auto ">
           {productos.map((producto, index) => (
             <div
               key={producto.id}
@@ -98,7 +98,7 @@ const ElementProductos: FC = () => {
                   <img 
                     src={producto.imagen} 
                     alt={producto.nombre} 
-                    className="max-h-30 md:max-h-80 object-contain"
+                    className="max-h-60 md:max-h-80 object-contain"
                   />
                 </div>
 

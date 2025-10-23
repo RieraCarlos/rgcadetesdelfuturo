@@ -94,14 +94,14 @@ const Testimonios: FC = () => {
             ))}
           </div>
 
-          {/* Botones de Navegación */}
+          {/* Botones de Navegación 
           <button onClick={irAlAnterior} className="absolute top-1/2 left-0 md:-left-16 transform -translate-y-1/2 bg-[#46412d] p-2 rounded-full hover:bg-[#8d8159] transition-colors duration-300 z-20">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
           </button>
           <button onClick={irAlSiguiente} className="absolute top-1/2 right-0 md:-right-16 transform -translate-y-1/2 bg-[#46412d] p-2 rounded-full hover:bg-[#8d8159] transition-colors duration-300 z-20">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
           </button>
-
+            */}
           {/* Indicadores de Puntos */}
           <div className="flex justify-center space-x-2 mt-8">
             {testimoniosData.map((_, index) => (

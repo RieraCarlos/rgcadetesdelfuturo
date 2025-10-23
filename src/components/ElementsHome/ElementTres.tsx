@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { FaFileDownload } from "react-icons/fa";
+
 // Datos de ejemplo para el contenido de los módulos
 const modulesContent = [
   {id:'Módulo 1',title:'Primer Nivel', subtitle: 'Cadete aspirante',content:'Es la primera etapa en el proceso de formación. En este nivel, el cadete se enfoca en recibir una "Instrucción formal", lo que implica el aprendizaje de los fundamentos, las reglas y los conocimientos básicos necesarios para avanzar en su carrera. '},
@@ -11,33 +12,41 @@ const modulesContent = [
 ];
 
 const CourseView: React.FC = () => {
+  const [clickedCard, setClickedCard] = useState<string | null>(null);
+
+  const handleCardClick = (cardId: string) => {
+    setClickedCard(clickedCard === cardId ? null : cardId);
+  };
 
   return (
-    <div className="min-h-screen text-white mb-25">
-      {/* Título de la sección o página */}
-      <p className="text-[121px] font-black text-[#242424]">DESCRIPCIÓN DEL CURSO</p>
+    <div className="min-h-screen text-white mb-16 md:mb-24">
+      {/* Título de la sección o página - AHORA RESPONSIVO */}
+      <p className="text-5xl sm:text-6xl lg:text-8xl xl:text-[121px] font-black text-[#242424] text-center break-words">DESCRIPCIÓN DEL CURSO</p>
 
       {/* Contenedor Principal con diseño responsive */}
-      <div className="flex flex-col md:flex-row gap-6 md:gap-8">
+      <div className="flex flex-col gap-6 md:gap-8 mt-8 px-4">
         
         {/* Lado Izquierdo: Imagen de portada y Módulos */}
-        <div className="w-full flex flex-col space-y-6">
-          <div className="p-4 md:p-6 flex flex-col items-center justify-center">
-            <span className="text-xl md:text-2xl font-bold text-center w-[80%] mb-5">
+        <div className="w-full flex flex-col space-y-8">
+          <div className="p-4 md:p-6 flex flex-col items-center justify-center text-center">
+            <span className="text-lg md:text-xl font-bold w-full max-w-4xl mb-5">
               En un mundo en constante cambio, donde los desafíos no solo están en la selva, sino también en el entorno digital, económico y social, nace un nuevo tipo de héroe
             </span>
-            <span className='text-5xl font-extrabold text-[#46412d]'>¡EL CADETE DEL FUTURO!</span>
+            <span className='text-3xl sm:text-5xl font-extrabold text-[#46412d]'>¡EL CADETE DEL FUTURO!</span>
           </div>
 
-          <div className="flex flex-row space-x-8 px-30 mb-12">
+          {/* Contenedor de tarjetas - AHORA RESPONSIVO */}
+          <div className="flex flex-col lg:flex-row gap-8 w-full max-w-7xl mx-auto">
             {modulesContent.map((card, index) => (
               <Card
                 key={`${card.id}-${index}`}
-                className={`w-full h-70 py-6 md:py-8 text-lg md:text-xl bg-transparent font-semibold border-l-0.1 border-t-4 border-b-4 border-r-8 border-[#46412d]`}
+                data-state={clickedCard === card.id ? 'clicked' : 'unclicked'}
+                onClick={() => handleCardClick(card.id)}
+                className={`w-full h-72 py-6 md:py-8 text-lg md:text-xl bg-transparent font-semibold border-l-0.1 border-t-4 border-b-4 border-r-8 border-[#46412d] group cursor-pointer`}
               >
                 <CardContent className="flex flex-col items-center justify-center h-full group">
                   <div className="relative w-full flex flex-col items-center justify-center mb-4 overflow-hidden rounded-md h-full">
-                    <div className='w-full transition-transform duration-500 group-hover:scale-105'>
+                    <div className='w-full transition-transform duration-500 group-hover:scale-105 group-data-[state=clicked]:scale-105 text-center'>
                       <span className='text-white text-3xl font-extrabold mb-2'>{card.title}</span>
                     </div>
                     {/* LÁMINA NEGRA Y DESCRIPCIÓN */}
@@ -47,6 +56,7 @@ const CourseView: React.FC = () => {
                           bg-black
                           transform translate-y-full
                           group-hover:translate-y-0 
+                          group-data-[state=clicked]:translate-y-0
                           transition-transform 
                           duration-500 
                           ease-in-out
@@ -54,6 +64,7 @@ const CourseView: React.FC = () => {
                           flex-col 
                           items-center 
                           justify-center
+                          p-4
                       "
                     >
                       <p
@@ -61,6 +72,7 @@ const CourseView: React.FC = () => {
                             text-white 
                             opacity-0 
                             group-hover:opacity-100 
+                            group-data-[state=clicked]:opacity-100
                             transition-opacity 
                             duration-300 
                             delay-200 
@@ -75,6 +87,7 @@ const CourseView: React.FC = () => {
                         text-white
                         opacity-0 
                         group-hover:opacity-100 
+                        group-data-[state=clicked]:opacity-100
                         transition-opacity 
                         duration-300 
                         delay-200
@@ -90,7 +103,7 @@ const CourseView: React.FC = () => {
               </Card>
             ))}
           </div>
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center mt-8">
             <Button className="bg-[#46412d] text-white text-xl flex items-center gap-2 p-6 font-bold cursor-pointer hover:bg-transparent hover:text-[#46412d] hover:border-l-0.1 hover:border-t-1 hover:border-b-1 hover:border-r-2 hover:border-white transition-colors duration-300">
               <FaFileDownload className="text-2xl" />
               Descarga el temario

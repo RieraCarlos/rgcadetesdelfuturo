@@ -8,21 +8,23 @@ import Soldado7 from "../../img/Soldado7.png";
 import Soldado8 from "../../img/Soldado8.png";
 import Soldado9 from "../../img/Soldado9.png";
 import Soldado10 from "../../img/Soldado10.png";
+import Instructor1 from "../../img/Instructor1.png"
+import Instructor2 from "../../img/Instructor2.png";
 import TiltedCard from "@/hooks/gsap/TiltedCard";
 export default function ElementCmejores(){
     return(
         <>
             <div className="text-white flex justify-center mb-8">
-                <h2 className="text-xl md:text-6xl font-extrabold">Conócenos<span className=" text-[#8d8159]">...</span></h2>
+                <h2 className="text-5xl md:text-6xl font-extrabold">Conócenos<span className=" text-[#8d8159]">...</span></h2>
             </div>
             {/*---Instructores---*/}
             <div className="px-4 md:px-14 mb-7">
                 <div className="text-white flex justify-start mb-10">
-                    <h2 className="text-xl md:text-4xl font-bold">Nuestros <span className=" text-[#8d8159]">instructores</span></h2>
+                    <h2 className="text-3xl md:text-4xl font-bold">Nuestros <span className=" text-[#8d8159]">instructores</span></h2>
                 </div>
                 <div className="flex justify-evenly">
                     <TiltedCard
-                        imageSrc={Soldado1}
+                        imageSrc={Instructor1}
                         altText="SGT. EDDER PRADO"
                         captionText="SGT. EDDER PRADO"
                         containerHeight="250px"
@@ -41,7 +43,7 @@ export default function ElementCmejores(){
                         }
                     />
                     <TiltedCard
-                        imageSrc={Soldado1}
+                        imageSrc={Instructor2}
                         altText="CDT. CARLA RIERA"
                         captionText="CDT. CARLA RIERA"
                         containerHeight="250px"
@@ -64,7 +66,7 @@ export default function ElementCmejores(){
             {/*---Estudiantes---*/}
             <div className="px-4 md:px-14 mb-10">
                 <div className="text-white flex justify-start">
-                    <h2 className="text-xl md:text-4xl font-bold">Los 10 mejores <span className=" text-[#8d8159]">aspirantes</span></h2>
+                    <h2 className="text-3xl md:text-4xl font-bold">Los 10 mejores <span className=" text-[#8d8159]">aspirantes</span></h2>
                 </div>
                 <div className="content-card1">
                     <TiltedCard

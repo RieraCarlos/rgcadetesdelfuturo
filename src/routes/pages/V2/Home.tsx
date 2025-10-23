@@ -33,7 +33,7 @@ export default function Home() {
                 <ScrollVelocity
                     texts={['rg technology', 'ssedee']} 
                     velocity={100} 
-                    className="custom-scroll-text text-white opacity-15 h-25"
+                    className="custom-scroll-text text-white opacity-15 "
                 />
             </div>
             <ElementoSeis/>

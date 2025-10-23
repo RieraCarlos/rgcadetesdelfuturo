@@ -6,7 +6,7 @@ import TrueFocus from '../../hooks/gsap/TrueFocus';
 
 const CenteredContent: React.FC = () => {
   return (
-    <div className="min-h-screen p-4 md:p-8 flex flex-col items-center justify-center text-white">
+    <div className="min-h-screen my-10 p-4 md:p-8 flex flex-col items-center justify-center text-white">
 
       {/* Título <h1 className="text-xl md:text-2xl font-bold mb-8">Título</h1>*/}
       <div className='text-xl md:text-2xl font-bold mb-8'>

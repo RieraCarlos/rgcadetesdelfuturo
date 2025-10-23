@@ -51,7 +51,7 @@ export default function FormContactanos() {
                 </div>
 
                 {/* Columna de la Imagen */}
-                <div className="w-full flex justify-center items-center order-first md:order-last">
+                <div className="w-full flex justify-center items-center md:order-last">
                     <img src={Avatar} alt="Asistente virtual" className='w-64 md:w-80 lg:w-96' />
                 </div>
             </div>
