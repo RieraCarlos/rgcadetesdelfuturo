@@ -85,7 +85,7 @@ export default function Nosotros() {
 
                     {/* Imagen */}
                     <div className="h-80 rounded-lg overflow-hidden">
-                        <img src={Soldado4}} alt="Instructor y cadete" className="w-full h-full object-contain"/>
+                        <img src={Soldado4} alt="Instructor y cadete" className="w-full h-full object-contain"/>
                     </div>
                 </div>
 
