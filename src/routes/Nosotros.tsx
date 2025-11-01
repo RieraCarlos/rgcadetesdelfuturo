@@ -3,7 +3,8 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Footer from "@/components/ElementsHome/Footer";
 import { ShieldCheck, Cpu, BrainCircuit, Gamepad2, Network, CheckCircle2, Users, Sparkles } from 'lucide-react';
-
+import Fondo2 from "@/assets/img/fondo2.avif"
+import Soldado4 from "@/assets/img/Soldado4.avif"
 export default function Nosotros() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     
@@ -52,7 +53,7 @@ export default function Nosotros() {
             {/* Hero Section */}
             <div className="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center px-4">
                 <div className="absolute inset-0 "></div>
-                <img src="/src/assets/img/fondo2.avif" alt="Cadetes entrenando" className="absolute inset-0 w-full h-full object-cover opacity-35"/>
+                <img src={Fondo2} alt="Cadetes entrenando" className="absolute inset-0 w-full h-full object-cover opacity-35"/>
                 <div className="relative z-10">
                     <h1 className="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">
                         Cadetes del Futuro: <span className="text-[#d4c284]">Forjando Jóvenes Íntegros,</span>
@@ -84,7 +85,7 @@ export default function Nosotros() {
 
                     {/* Imagen */}
                     <div className="h-80 rounded-lg overflow-hidden">
-                        <img src="/src/assets/img/Soldado4.avif" alt="Instructor y cadete" className="w-full h-full object-contain"/>
+                        <img src={Soldado4}} alt="Instructor y cadete" className="w-full h-full object-contain"/>
                     </div>
                 </div>
 
