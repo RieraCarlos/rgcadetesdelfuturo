@@ -7,7 +7,7 @@ import SplitText from "../../hooks/gsap/SplitText";
 
 const ContentSection: React.FC = () => {
   return (
-    <div className=" min-h-screen p-0 lg:p-12 text-white overflow-hidden">
+    <div className=" min-h-screen p-0 lg:p-12 mt-20 text-white overflow-hidden">
       <div className="flex flex-col space-y-10 min-[1300px]:flex-row lg:space-x-6 lg:space-y-0 items-stretch">
         {/* Contenido 1 */}
         <div className="flex-1 bg-transparent text-white border-none w-full">

@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import type { FC } from 'react';
 
 // Importa las imágenes que necesites. Usaré algunas de las que vi en tu proyecto.
-import Producto1 from '../../img/P-T.png';
-import Producto2 from '../../img/P-C.png';
-import Producto3 from '../../img/P-F.png';
-import Producto4 from '../../img/P-SB.png';
+import Producto1 from '../../assets/img/P-T.avif';
+import Producto2 from '../../assets/img/P-C.avif';
+import Producto3 from '../../assets/img/P-F.avif';
+import Producto4 from '../../assets/img/P-SB.avif';
 
 
 // Definimos el tipo para nuestros productos para mayor claridad y seguridad de tipos.
@@ -76,8 +76,8 @@ const ElementProductos: FC = () => {
   }, []);
 
   return (
-    <section style={{ backgroundColor: '#000000' }} className=" text-white overflow-hidden">
-      <div className=" h-[100vh] mx-auto px-4">
+    <section className=" text-white overflow-hidden">
+      <div className="mx-auto px-4 mb-10">
         <h2 
           style={{ color: '#FFFFFF' }} 
           className="text-4xl md:text-5xl font-extrabold text-center mb-8"
@@ -85,7 +85,7 @@ const ElementProductos: FC = () => {
           Producto gratis por ser parte del curso
         </h2>
 
-        <div className="relative h-auto min-h-96 md:min-h-[20rem] w-full max-w-5xl mx-auto ">
+        <div className="relative h-auto min-h-140 md:min-h-[20rem] w-full max-w-5xl mx-auto">
           {productos.map((producto, index) => (
             <div
               key={producto.id}

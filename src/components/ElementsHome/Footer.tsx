@@ -2,10 +2,9 @@ import type { FC } from 'react';
 
 // Importando imágenes para el logo y redes sociales
 import Logo from '../../img/icon.png';
-import FacebookIcon from '../../img/facebook.png';
-import InstagramIcon from '../../img/Instagram.webp';
-import TikTokIcon from '../../img/tiktok.png';
-import LinkedInIcon from '../../img/linkedin.png';
+import { Facebook, Instagram, Linkedin, MessageSquare, Youtube } from 'lucide-react';
+import LogoCF from '../../assets/img/LogoCF.avif';
+
 
 // Datos para los enlaces, facilitando su mantenimiento
 const navLinks = [
@@ -22,10 +21,9 @@ const resourceLinks = [
 ];
 
 const socialLinks = [
-  { href: '#', icon: FacebookIcon, alt: 'Facebook' },
-  { href: '#', icon: InstagramIcon, alt: 'Instagram' },
-  { href: '#', icon: TikTokIcon, alt: 'TikTok' },
-  { href: '#', icon: LinkedInIcon, alt: 'LinkedIn' },
+  { href: 'https://www.facebook.com/profile.php?id=61580625509432', icon: Facebook, alt: 'Facebook' },
+  { href: 'https://www.facebook.com/profile.php?id=61580625509432', icon: Instagram, alt: 'Instagram' },
+  { href: 'https://www.tiktok.com/@cadetesdelfuturo?is_from_webapp=1&sender_device=pc', icon: Youtube, alt: 'TIKTOK' },
 ];
 
 const Footer: FC = () => {
@@ -38,8 +36,8 @@ const Footer: FC = () => {
           {/* 1. Sección de Branding y Redes Sociales */}
           <div className="flex flex-col">
             <div className="flex items-center mb-4">
-              <img src={Logo} alt="RG Technology Logo" className="h-10 w-auto" />
-              <span className="ml-3 text-xl font-bold text-white">RG Technology</span>
+              <img src={LogoCF} alt="RG Technology Logo" className="h-15 w-auto" />
+              <span className="ml-3 text-xl font-bold text-white">Cadetes del futuro</span>
             </div>
             <p className="text-sm text-gray-400 mb-4">
               Formando a los líderes del futuro con disciplina, honor y tecnología.
@@ -47,7 +45,7 @@ const Footer: FC = () => {
             <div className="flex space-x-4">
               {socialLinks.map((social) => (
                 <a key={social.alt} href={social.href} className="hover:opacity-75 transition-opacity duration-300">
-                  <img src={social.icon} alt={social.alt} className="h-6 w-6" />
+                  <social.icon className="h-6 w-6"  />
                 </a>
               ))}
             </div>

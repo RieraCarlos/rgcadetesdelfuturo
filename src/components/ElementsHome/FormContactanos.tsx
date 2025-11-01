@@ -1,4 +1,4 @@
-import Avatar from '../../img/personaje.png'
+import Avatar from '../../assets/img/personaje.avif'
 
 export default function FormContactanos() {
     return (

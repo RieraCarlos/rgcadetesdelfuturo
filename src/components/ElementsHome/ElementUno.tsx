@@ -6,15 +6,16 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel"
-import Fondo1 from '../../img/Fondo1.jpg';
-import Fondo2 from '../../img/fondo2.jpg';
-import Fondo3 from '../../img/fondo3.jpg';
-import Fondo4 from '../../img/fondo4.jpg';
-import Fondo5 from '../../img/fondo5.jpg';
-import Fondo6 from '../../img/fondo6.jpg';
-import Fondo7 from '../../img/fondo7.jpg';
+import Fondo1 from '../../assets/img/fondo1.avif';
+import Fondo2 from '../../assets/img/fondo2.avif';
+import Fondo3 from '../../assets/img/fondo3.avif';
+import Fondo4 from '../../assets/img/fondo4.avif';
+import Fondo5 from '../../assets/img/fondo5.avif';
+import Fondo6 from '../../assets/img/fondo6.avif';
+import Fondo7 from '../../assets/img/fondo7.avif';
 
 import Autoplay from "embla-carousel-autoplay"
+import { Link } from 'react-router-dom';
 
 const HeroSection: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -65,11 +66,11 @@ const HeroSection: React.FC = () => {
           
           {/* Menú de Escritorio */}
           <div className='hidden md:flex items-center space-x-4 font-bold text-white text-base'>
-            <a href="" className='hover:text-[#8d8159] transition-colors'>Productos</a>
-            <a href="" className='hover:text-[#8d8159] transition-colors'>Nosotros</a>
-            <a href="" className='hover:text-[#8d8159] transition-colors'>Contactanos</a>
+            <Link to="/productos" className='hover:text-[#8d8159] transition-colors'>Productos</Link>
+            <Link to="/nosotros" className='hover:text-[#8d8159] transition-colors'>Nosotros</Link>
+            <Link to="/contactanos" className='hover:text-[#8d8159] transition-colors'>Contactanos</Link>
             <Button className='bg-transparent text-[#8d8159] font-bold text-lg hover:bg-[#8d8159] hover:text-black transition-all duration-300'>
-              <a href="">Login</a>
+              <Link to="/seccion/login">Login</Link>
             </Button>
           </div>
 
@@ -90,11 +91,11 @@ const HeroSection: React.FC = () => {
           {isMenuOpen && (
             <div className="md:hidden absolute top-16 left-0 w-full bg-black/90 rounded-lg shadow-lg py-4">
               <div className="flex flex-col items-center space-y-4">
-                <a href="" className='hover:text-[#8d8159] transition-colors'>Productos</a>
-                <a href="" className='hover:text-[#8d8159] transition-colors'>Nosotros</a>
-                <a href="" className='hover:text-[#8d8159] transition-colors'>Contactanos</a>
+                <Link to="/productos" className='hover:text-[#8d8159] transition-colors'>Productos</Link>
+                <Link to="/nosotros" className='hover:text-[#8d8159] transition-colors'>Nosotros</Link>
+                <Link to="/contactanos" className='hover:text-[#8d8159] transition-colors'>Contactanos</Link>
                 <Button className='bg-transparent border border-[#8d8159] text-[#8d8159] font-bold text-lg hover:bg-[#8d8159] hover:text-black transition-all duration-300 w-3/4'>
-                  <a href="">Login</a>
+                  <Link to="/seccion/login">Login</Link>
                 </Button>
               </div>
             </div>

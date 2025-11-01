@@ -3,10 +3,9 @@ import type { FC } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 
 // Usaré una variedad de avatares para un look más dinámico
-import AsesorImg from '../../img/Asesor.png';
-import AsesoraImg from '../../img/Asesora.png';
-import Instructor1Img from '../../img/Instructor1.png';
-import Instructor2Img from '../../img/Instructor2.png';
+import AsesoraImg from '../../assets/img/Asesora.png';
+import Instructor1Img from '../../assets/img/Instructor1.avif';
+import Instructor2Img from '../../assets/img/Instructor2.avif';
 
 // Definimos un tipo más completo para los testimonios
 type Testimonio = {

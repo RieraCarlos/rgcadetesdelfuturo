@@ -1,7 +1,7 @@
 // src/components/CenteredContent.tsx
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import EscudoEcuador from '@/img/Escudo_de_Ecuador.png'
+import EscudoEcuador from '@/assets/img/Escudo_de_Ecuador.png'
 import TrueFocus from '../../hooks/gsap/TrueFocus';
 
 const CenteredContent: React.FC = () => {

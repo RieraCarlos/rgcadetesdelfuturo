@@ -13,7 +13,7 @@ const modulesContent = [
 
 const CourseView: React.FC = () => {
   const [clickedCard, setClickedCard] = useState<string | null>(null);
-
+  const publicUrlTemario = "https://ifdgpkjrxqrddwtoskft.supabase.co/storage/v1/object/public/recursos/Temario_Cadetes_del_Futuro.pdf"
   const handleCardClick = (cardId: string) => {
     setClickedCard(clickedCard === cardId ? null : cardId);
   };
@@ -104,9 +104,19 @@ const CourseView: React.FC = () => {
             ))}
           </div>
           <div className="flex items-center justify-center mt-8">
-            <Button className="bg-[#46412d] text-white text-xl flex items-center gap-2 p-6 font-bold cursor-pointer hover:bg-transparent hover:text-[#46412d] hover:border-l-0.1 hover:border-t-1 hover:border-b-1 hover:border-r-2 hover:border-white transition-colors duration-300">
-              <FaFileDownload className="text-2xl" />
-              Descarga el temario
+            <Button 
+                className="bg-[#46412d] text-white text-xl flex items-center gap-2 p-6 font-bold cursor-pointer hover:bg-transparent hover:text-[#46412d] hover:border-l-0.1 hover:border-t-1 hover:border-b-1 hover:border-r-2 hover:border-white transition-colors duration-300"
+                asChild // 👈 1. Esto hace que el Button se renderice como el componente hijo (el <a>)
+            >
+                <a 
+                    href={publicUrlTemario} // 👈 2. Se convierte en la etiqueta <a> real
+                    download // 👈 3. Fuerza la descarga
+                    target="_blank" // Opcional: Recomendado para enlaces externos
+                    rel="noopener noreferrer" // Seguridad
+                >
+                    <FaFileDownload className="text-2xl" />
+                    Descarga el temario
+                </a>
             </Button>
           </div>
         </div>

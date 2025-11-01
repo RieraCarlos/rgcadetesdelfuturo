@@ -1,10 +1,10 @@
 // src/components/HorizontalScroll.tsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import fondo2 from '../../img/Fondo1.jpg';
-import fondo3 from '../../img/fondo8.jpg';
-import fondo4 from '../../img/fondo9.jpg';
-import fondo5 from '../../img/fondo11.jpg';
+import fondo2 from '../../assets/img/fondo1.avif';
+import fondo3 from '../../assets/img/fondo8.avif';
+import fondo4 from '../../assets/img/fondo9.avif';
+import fondo5 from '../../assets/img/fondo11.avif';
 import RotatingText from '../../hooks/gsap/RotatingText';
 import useEmblaCarousel, { EmblaCarouselType } from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
@@ -12,7 +12,7 @@ import { useIsMobile } from '../../hooks/use-mobile';
 
 // Datos de ejemplo para las tarjetas
 const cardData = [
-  { id: 1, title: 'Comunidad juvelin', image: fondo2, description: 'Fomentamos la camaradería y el trabajo en equipo.' },
+  { id: 1, title: 'Comunidad juvenil', image: fondo2, description: 'Fomentamos la camaradería y el trabajo en equipo.' },
   { id: 2, title: 'Ambiente selvático', image: fondo3, description: 'Aprende a adaptarte y superar desafíos en la naturaleza.' },
   { id: 3, title: 'Amoldamiento', image: fondo4, description: 'Desarrolla tu carácter y disciplina con nuestro entrenamiento.' },
   { id: 4, title: 'Supervivencia', image: fondo5, description: 'Adquiere habilidades prácticas para cualquier situación.' },

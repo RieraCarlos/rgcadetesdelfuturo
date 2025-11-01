@@ -1,38 +1,22 @@
 import React from 'react'
 import { BrowserRouter as Router,Route, Routes } from 'react-router-dom'
-import Home from './routes/pages/V2/Home.js'
-import ScannerLogin from './routes/pages/V2/ScannerLogin'
-import HomEstudiante from './routes/pages/V2/Estudiantes/HomEstudiante'
-import Dashboard from './routes/pages/V2/Admin/page'
-import HomeLogin from './routes/pages/V2/SeccionesLogin.js'
-import { LoginForm } from './routes/pages/V2/loginAdmin_Inst/login-form'
-import HomeInstructores from './routes/pages/V2/Instructores/HomeInstructores.js'
-import { SignUpForm } from './routes/pages/V2/loginAdmin_Inst/signup-form'
-import Contactanos from './routes/pages/V2/Contactanos.js'
-import Productos from './routes/pages/V2/Productos.js'
-import Nosotros from './routes/pages/V2/Nosotros.js'
-
-
+import Home from './routes/Home'
+import HomEstudiante from './routes/pages/Estudiantes/HomEstudiante.js'
+import Dashboard from './routes/pages/Admin/page'
+import HomeLogin from './routes/SeccionesLogin'
+import { LoginForm } from './routes/pages/loginAdmin_Inst/login-form'
+import HomeInstructores from './routes/pages/Instructores/HomeInstructores.js'
+import { SignUpForm } from './routes/pages/loginAdmin_Inst/signup-form'
+import Contactanos from './routes/Contactanos'
+import Productos from './routes/Productos'
+import Nosotros from './routes/Nosotros'
+import ScannerLogin from './routes/ScannerLogin'
 
 function App() {
-  {/* 
-    <Route path="/index.html" element={<Home/>}/>
-    <Route path="/lagoagrio" element={<SedeLagoAgrio/>}/>
-    <Route path="/elcoca" element={<SedeElCoca/>}/>
-    <Route path="/lajoyadelosachas" element={<SedeLaJoyaDeLosSachas/>}/>
-    <Route path="/spline" element={<SplinePage/>}/>
-    <Route path="/scanner" element={<IndexQr/>}/>
-    <Route path="/login" element={<Login/>}/>
-    <Route path="/qrasistencia" element={<QRasistencia/>}/>
-    <Route path="/qrpuntos" element={<QRpuntos/>}/>
-    <Route path="/rgtechnology" element={<Rgtechnology/>}/>
-    <Route path="*" element={<Home/>}/> 
-  */}
-
   return (
     <div>
       <Routes>
-        <Route path="*" element={<Home/>}/>
+        <Route path="/*" element={<Home/>}/>
         <Route path="/seccion/login" element={<HomeLogin/>}/>
         <Route path="/estudiante/login" element={<ScannerLogin/>}/>
         <Route path="/login" element={<LoginForm/>}/>
