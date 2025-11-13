@@ -145,22 +145,22 @@ export default function Calendario() {
   const pendingActivities = activities.filter(activity => activity.estado === 'pendiente');
 
   return (
-    <div className="min-h-screen bg-white p-4">
+    <div className="min-h-screen bg-neutral-900 p-4 rounded-2xl">
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2 text-black">
-              <Calendar className="w-8 h-8 text-black" />
+            <h1 className="text-3xl font-bold flex items-center gap-2 text-white">
+              <Calendar className="w-8 h-8" />
               Calendario de Actividades
             </h1>
-            <p className="text-black/70 mt-1">
+            <p className="text-white mt-1">
               Visualiza tus cursos de los sábados y actividades pendientes
             </p>
           </div>
           <div className="text-right">
-            <div className="text-sm text-black/60">Actividades pendientes</div>
+            <div className="text-sm text-white">Actividades pendientes</div>
             <div className="text-2xl font-bold text-black bg-yellow-200 inline-block px-3 py-0.5 rounded border border-yellow-400">
               {pendingActivities.length}
             </div>

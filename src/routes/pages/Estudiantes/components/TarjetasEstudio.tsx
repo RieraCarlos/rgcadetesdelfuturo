@@ -867,7 +867,7 @@ REGLAS:
 
   // Inicio
   return (
-    <div className="max-w-4xl mx-auto space-y-6 p-6 bg-white">
+    <div className="max-w-4xl mx-auto space-y-6 p-6 bg-white rounded-2xl">
       <div className="text-center space-y-4">
         <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-600">
           🧠 Tarjetas de Estudio con IA

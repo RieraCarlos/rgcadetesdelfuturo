@@ -11,6 +11,7 @@ import Contactanos from './routes/Contactanos'
 import Productos from './routes/Productos'
 import Nosotros from './routes/Nosotros'
 import ScannerLogin from './routes/ScannerLogin'
+import BetaProductos from './routes/BetaProductos'
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/contactanos" element={<Contactanos/>}/>
         <Route path="/productos" element={<Productos/>}/>
         <Route path="/nosotros" element={<Nosotros/>}/>
+        <Route path='/productosbeta' element={<BetaProductos/>}/>
       </Routes>
     </div>
   )

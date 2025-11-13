@@ -1,4 +1,4 @@
-import { supabase } from '@/supabase/supabaseClient';
+import  supabase  from '@/supabase/supabaseClient';
 
 type datosTarea = {
     tema:string,

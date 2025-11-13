@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { ChevronLeft, ChevronRight, Plus, Edit3, Trash2, Save, X, Calendar, Pencil, Check, Trash } from "lucide-react";
-import { supabase } from "@/supabase/supabaseClient";
+import  supabase  from "@/supabase/supabaseClient";
 
 // ===== Tipos =====
 interface ActivityCard {

@@ -306,7 +306,12 @@ export default function Productos(){
                     </div>
                 </div>
             </div>
-            
+            {/*Boton*/}
+            <div className="w-full flex justify-center items-center py-2 mb-20">
+                <Button className="bg-[#171717] border-neutral-800 text-[#8d8159] hover:bg-[#8d8159] hover:text-[#171717] p-6 text-xl cursor-pointer">
+                    <Link to={'/productosbeta'}>Prueba un beta de nuestros productos</Link>
+                </Button>
+            </div>
             {/*Seccion de Carrusel de productos */}
             <div className="relative text-white px-4 md:px-10 mb-20">
                 <div className="mb-10 text-center">

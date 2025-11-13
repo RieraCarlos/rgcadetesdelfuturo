@@ -1,4 +1,4 @@
-import { supabase } from "@/supabase/supabaseClient.js";
+import  supabase  from "@/supabase/supabaseClient.js";
 
 export const loginEstudiante = async (cedulaId: string) => {
     const {data,error} = await supabase

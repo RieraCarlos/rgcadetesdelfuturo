@@ -1,4 +1,4 @@
-import { supabase } from "@/supabase/supabaseClient";
+import  supabase  from "@/supabase/supabaseClient";
 //signup habilitar dependiendo el caso
 import { type SignUpFormData } from "@/routes/pages/V2/loginAdmin_Inst/signup-form";
 

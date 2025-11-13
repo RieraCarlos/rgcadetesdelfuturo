@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { supabase } from "@/supabase/supabaseClient"; // 👈 tu cliente
+import  supabase  from "@/supabase/supabaseClient"; // 👈 tu cliente
 
 // ==== Tipos ====
 interface IFormInput {

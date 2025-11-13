@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {supabase} from "@/supabase/supabaseClient"; // Asegúrate que la ruta a tu cliente supabase sea correcta
+import supabase from "@/supabase/supabaseClient"; // Asegúrate que la ruta a tu cliente supabase sea correcta
 import { useInView } from 'react-intersection-observer'
 import {
   Heart,
