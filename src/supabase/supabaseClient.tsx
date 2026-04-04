@@ -1,7 +1,7 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL ?? "https://rbjgmchzzuzfyjfmtpkv.supabase.co";
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY ?? "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmZGdwa2pyeHFyZGR3dG9za2Z0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzNjk2NDMsImV4cCI6MjA3MTk0NTY0M30.dJIRqF4KlYl280UWQap8Ks4-hdLruwy5xhcwCs0hOEY"; // reemplaza o usa .env
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL ?? "https://sdlqvpvntazgfypoqbur.supabase.co";
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY ?? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkbHF2cHZudGF6Z2Z5cG9xYnVyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTI3NTk0OCwiZXhwIjoyMDkwODUxOTQ4fQ.lQ3LJCiZQLKn4M_jIzi00JZABulrPIbxxgPc416nASY"; // usa publishable key si anon key no existe
 
 declare global {
   interface Window { __SUPABASE_CLIENT__?: SupabaseClient }

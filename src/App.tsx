@@ -12,6 +12,8 @@ import Productos from './routes/Productos'
 import Nosotros from './routes/Nosotros'
 import ScannerLogin from './routes/ScannerLogin'
 import BetaProductos from './routes/BetaProductos'
+import QRScannerView from './routes/QRScannerView'
+import PublicProfileFicha from './routes/PublicProfileFicha'
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
         <Route path="/productos" element={<Productos/>}/>
         <Route path="/nosotros" element={<Nosotros/>}/>
         <Route path='/productosbeta' element={<BetaProductos/>}/>
+        <Route path='/scanner' element={<QRScannerView/>}/>
+        <Route path='/record/:studentId' element={<PublicProfileFicha/>}/>
       </Routes>
     </div>
   )

@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    EnvironmentPlugin('all')
+    EnvironmentPlugin(['GOOGLE_AI_API_KEY', 'REACT_APP_GOOGLE_AI_API_KEY'])
   ],
   server: {
     host: '0.0.0.0',

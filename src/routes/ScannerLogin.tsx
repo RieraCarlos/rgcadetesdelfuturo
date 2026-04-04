@@ -22,6 +22,8 @@ export default function ScannerLogin(){
             const response = await loginEstudiante(cedulaId);
             if (response) {
                 setVerificacionEstado('Estudiante verificado con éxito.');
+                // Store student profile in localStorage for persistent identification
+                localStorage.setItem('student_profile', JSON.stringify(response));
                 navigate('/estudiante'); // Redirige al dashboard u otra página
             } else {
                 setVerificacionEstado('Estudiante no encontrado.');

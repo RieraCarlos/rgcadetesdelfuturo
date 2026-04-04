@@ -25,12 +25,13 @@ import BlogsComponents from "@/components/Blogs/BlogsComponent"
 import TarjetasEstudio from "./components/TarjetasEstudio"
 import NotasActividades from "./components/NotasActividades"
 import Calendario from "./components/Calendario"
+import FinanzasPersonales from "./components/FinanzasPersonales"
+import CantosGuerra from "./components/CantosGuerra"
 
 
 export default function HomEstudiante() {
     const [activeItemTitle, setActiveItemTitle] = React.useState<string>("Home");
     const [activeWorkspaceTitle, setActiveWorkspaceTitle] = React.useState<string>("");
-
 
     const handleMainNavItemClick = (item: NavMainItem) => {
       setActiveItemTitle(item.title);
@@ -40,6 +41,11 @@ export default function HomEstudiante() {
       setActiveWorkspaceTitle(item.title);
       setActiveItemTitle("");
     }
+    const handleFavoriteItemClick = (item: { name: string }) => {
+      setActiveWorkspaceTitle(item.name);
+      setActiveItemTitle("");
+    }
+
     const activePage = activeItemTitle || activeWorkspaceTitle;
 
     // Diccionario de componentes
@@ -51,6 +57,8 @@ export default function HomEstudiante() {
         'Tarjetas de estudio':<TarjetasEstudio/>,
         'Notas y actividades':<NotasActividades/>,
         Calendario:<Calendario/>,
+        'Mis finanzas personales': <FinanzasPersonales />,
+        'Cantos de guerra': <CantosGuerra />,
         // Páginas específicas de tarjetas de estudio
         'Daily Journal & Reflection': <TarjetasEstudio selectedSetId="daily-journal" />,
         'Health & Wellness Tracker': <TarjetasEstudio selectedSetId="health-wellness" />,
@@ -67,7 +75,8 @@ export default function HomEstudiante() {
               onMainNavItemClick={handleMainNavItemClick}
               activeItemTitle={activeItemTitle}
               onNavWorkspacesItemClick={handleNavWorkspacesItemClick}
-              activeWorkspaceTitle={activePage}
+              activeWorkspaceTitle={activeWorkspaceTitle}
+              onFavoriteItemClick={handleFavoriteItemClick}
           />
           <SidebarInset>
               <header className="flex h-14 shrink-0 items-center gap-2">

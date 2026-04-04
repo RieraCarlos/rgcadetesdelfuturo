@@ -7,12 +7,20 @@ export const signup = async (req: SignUpFormData) => {
         const { data, error } = await supabase.auth.signUp({email: req.email, password: req.password});
         if(error || !data.user) throw new Error(error?.message || "Error con usuario");
         
-        if(req.rol === "Admin"){
-            const {error: insertError} = await supabase
-                .from('administrativos')
-                .insert([{id:data.user.id, nombres: req.name, cedula: req.cedula, zona: req.zona, correo: req.email}]);
-            if(insertError) throw new Error(insertError.message);
-        }
+        const roleStr = req.rol === "Admin" ? "admin" : "instructor";
+        
+        const {error: insertError} = await supabase
+            .from('profiles')
+            .insert([{
+                auth_id: data.user.id, 
+                full_name: req.name, 
+                cedula: req.cedula, 
+                zona: req.zona, 
+                correo: req.email,
+                role: roleStr
+            }]);
+        if(insertError) throw new Error(insertError.message);
+
         return "succesfully"
     } catch (error:any) {
         return {error: error.message || "Error con usuario"};
@@ -21,8 +29,8 @@ export const signup = async (req: SignUpFormData) => {
 //login, uso normal
 import { type LoginFormData } from "@/routes/pages/V2/loginAdmin_Inst/login-form";
 export const login = async (req: LoginFormData) => {
-    const nameBD = (req.rol === "Admin") ? "administrativos" : 
-                    (req.rol === "Instructor") ? "instructores" : "";
+    const roleReq = (req.rol === "Admin") ? "admin" : 
+                    (req.rol === "Instructor") ? "instructor" : "";
     try {
         //verificacion a inicio con el correo
         const {data, error} = await supabase.auth.signInWithPassword({email: req.email, password: req.password});
@@ -30,9 +38,10 @@ export const login = async (req: LoginFormData) => {
         //verificacion en bd
         console.log(data.user.id)
         const {data: datasUser, error: errorUser} = await supabase
-            .from(nameBD)
-            .select('id')
-            .eq('id', data.user.id)
+            .from('profiles')
+            .select('id, auth_id, role')
+            .eq('auth_id', data.user.id)
+            .eq('role', roleReq)
             .maybeSingle();
         //
         if(errorUser || !datasUser) { return {error: errorUser?.message || "Usuario no registrado"}};

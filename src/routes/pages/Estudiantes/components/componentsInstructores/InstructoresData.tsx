@@ -2,7 +2,7 @@
 export const instructors = [
   {
     id: '1',
-    name: 'Nombre del instructor 1',
+    name: 'Sargento segundo Edder Prado',
     role: 'Instructor',
     bio: 'Breve biografía del instructor 1.',
     studies: 'Estudios del instructor 1.',
@@ -12,8 +12,8 @@ export const instructors = [
   },
   {
     id: '2',
-    name: 'Nombre del instructor 2',
-    role: 'Tutor',
+    name: 'Soldado de Reserva Carla Riera',
+    role: 'Instructora',
     bio: 'Breve biografía del instructor 2.',
     studies: 'Estudios del instructor 2.',
     experience: 'Experiencia del instructor 2.',

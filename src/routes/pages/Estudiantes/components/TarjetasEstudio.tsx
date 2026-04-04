@@ -137,7 +137,25 @@ REGLAS:
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { temperature: 0.3, maxOutputTokens: 4000, candidateCount: 1 },
+            generationConfig: { 
+              temperature: 0.3, 
+              maxOutputTokens: 4000, 
+              candidateCount: 1, 
+              responseMimeType: 'application/json',
+              responseSchema: {
+                type: "ARRAY",
+                items: {
+                  type: "OBJECT",
+                  properties: {
+                    question: { type: "STRING" },
+                    options: { type: "ARRAY", items: { type: "STRING" } },
+                    correctAnswer: { type: "INTEGER" },
+                    explanation: { type: "STRING" }
+                  },
+                  required: ["question", "options", "correctAnswer", "explanation"]
+                }
+              }
+            },
           }),
         }
       );
@@ -149,17 +167,22 @@ REGLAS:
 
       let questions: Question[] | null = null;
       try {
-        questions = JSON.parse(repairJsonArray(content));
-      } catch (e1) {
-        const repaired = repairJsonArray(content)
-          .replace(/}\s*\n\s*{/g, '},{')
-          .replace(/,\s*(\}|\])/g, '$1');
+        questions = JSON.parse(content);
+      } catch (e0) {
         try {
-          questions = JSON.parse(repaired);
-        } catch (e2) {
-          console.error('Parse fail 1:', e1);
-          console.error('Parse fail 2:', e2);
-          throw new Error('La API devolvió JSON malformado. Intenta de nuevo.');
+          questions = JSON.parse(repairJsonArray(content));
+        } catch (e1) {
+          const repaired = repairJsonArray(content)
+            .replace(/}\s*\n\s*{/g, '},{')
+            .replace(/,\s*(\}|\])/g, '$1');
+          try {
+            questions = JSON.parse(repaired);
+          } catch (e2) {
+            console.error('Parse fail 0:', e0);
+            console.error('Parse fail 1:', e1);
+            console.error('Parse fail 2:', e2);
+            throw new Error('La API devolvió JSON malformado. Intenta de nuevo.');
+          }
         }
       }
 

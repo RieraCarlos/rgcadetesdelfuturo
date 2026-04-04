@@ -13,7 +13,13 @@ import {
   Settings2,
   Sparkles,
   Trash2,
+  Wallet,
+  Shield,
+  LucideIcon,
+  LogOut,
 } from "lucide-react"
+import { useNavigate } from "react-router-dom"
+import supabase from "@/supabase/supabaseClient"
 
 import { NavFavorites } from "./nav-favorites"
 import { type NavMainItem, NavMain } from "./nav-main"
@@ -31,7 +37,7 @@ import {
 const data = {
   teams: [
     {
-      name: "StartGood",
+      name: "rg|technology",
       logo: Command,
       plan: "Enterprise",
     },
@@ -54,54 +60,17 @@ const data = {
       url: "#",
       icon: Search,
     },
-    {
-      title: "Blog",
-      url: "#",
-      icon: Sparkles,
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Calendar",
-      url: "#",
-      icon: Calendar,
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-    },
-    {
-      title: "Templates",
-      url: "#",
-      icon: Blocks,
-    },
-    {
-      title: "Trash",
-      url: "#",
-      icon: Trash2,
-    },
-    {
-      title: "Help",
-      url: "#",
-      icon: MessageCircleQuestion,
-    },
   ],
   favorites: [
     {
       name: "Mis finanzas personales",
       url: "#",
-      emoji: "📊",
-    },
-    {
-      name: "Investigación",
-      url: "#",
-      emoji: "🍳",
+      icon: Wallet,
     },
     {
       name: "Cantos de guerra",
       url: "#",
-      emoji: "💪",
+      icon: Shield,
     },
   ],
   workspaces: [
@@ -128,13 +97,26 @@ export function AppSidebar({
   activeItemTitle,
   onNavWorkspacesItemClick,
   activeWorkspaceTitle,
-  ...props 
+  onFavoriteItemClick,
+  ...props
 }: React.ComponentProps<typeof Sidebar> & {
   onMainNavItemClick?: (item: NavMainItem) => void,
   activeItemTitle?: string,
   onNavWorkspacesItemClick?: (item: NavWorkspaceItem) => void,
   activeWorkspaceTitle?: string,
+  onFavoriteItemClick?: (item: { name: string; url: string; icon: LucideIcon }) => void,
 }) {
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    const confirm = window.confirm("¿Estás seguro que deseas cerrar la sesión?")
+    if (confirm) {
+      await supabase.auth.signOut()
+      localStorage.removeItem('student_profile')
+      navigate('/')
+    }
+  }
+
   const navMainItems = React.useMemo(
     () =>
       data.navMain.map((item) => ({
@@ -147,10 +129,19 @@ export function AppSidebar({
     () =>
       data.workspaces.map((item) => ({
         ...item,
-          isActive: item.title === activeWorkspaceTitle,
+        isActive: item.title === activeWorkspaceTitle,
       })),
     [activeWorkspaceTitle],
   )
+
+  const secondaryNavigation = [
+    {
+      title: "Cerrar Sesión",
+      url: "#",
+      icon: LogOut,
+      onClick: handleLogout,
+    },
+  ]
 
   return (
     <Sidebar className="border-r-0" {...props}>
@@ -159,11 +150,11 @@ export function AppSidebar({
         <NavMain items={navMainItems} onItemClick={onMainNavItemClick} />
       </SidebarHeader>
       <SidebarContent>
-        <NavFavorites favorites={data.favorites} />
+        <NavFavorites favorites={data.favorites} onItemClick={onFavoriteItemClick} />
         <NavWorkspaces items={navWorkspaceItems} onItemClick={onNavWorkspacesItemClick} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavSecondary items={secondaryNavigation} className="mt-auto" />
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
   )
-}
+}

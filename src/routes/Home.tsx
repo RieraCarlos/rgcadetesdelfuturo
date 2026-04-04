@@ -10,11 +10,14 @@ import Empresas from "@/components/ElementsHome/Empresas";
 import ElementCmejores from "@/components/ElementsHome/ElementCmejores";
 import ElementoSeis from "@/components/ElementsHome/ElementSeis";
 import FormContactanos from "@/components/ElementsHome/FormContactanos";
+import QRScannerTrigger from "@/components/QRScannerTrigger";
+
 export default function Home() {
     return (
         <>
             <HeroSection/>
             <ContentSection/>
+            <QRScannerTrigger />
             <HorizontalScroll/>
             <ElementCmejores/>
             <ScrollVelocity

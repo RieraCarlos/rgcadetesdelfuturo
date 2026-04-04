@@ -2,9 +2,10 @@ import  supabase  from "@/supabase/supabaseClient.js";
 
 export const loginEstudiante = async (cedulaId: string) => {
     const {data,error} = await supabase
-        .from('estudiantes')
+        .from('profiles')
         .select('*')
         .eq('cedula', cedulaId)
+        .eq('role', 'estudiante')
         .single();
     if(error){
         console.error('Error al autenticar el usuario:', error.message);

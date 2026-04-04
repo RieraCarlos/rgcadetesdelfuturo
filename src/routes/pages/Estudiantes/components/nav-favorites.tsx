@@ -6,6 +6,7 @@ import {
   MoreHorizontal,
   StarOff,
   Trash2,
+  LucideIcon,
 } from "lucide-react"
 
 import {
@@ -27,26 +28,28 @@ import {
 
 export function NavFavorites({
   favorites,
+  onItemClick,
 }: {
   favorites: {
     name: string
     url: string
-    emoji: string
+    icon: LucideIcon
   }[]
+  onItemClick?: (item: { name: string; url: string; icon: LucideIcon }) => void
 }) {
   const { isMobile } = useSidebar()
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Tareas sin realizar</SidebarGroupLabel>
+      <SidebarGroupLabel>Favoritos</SidebarGroupLabel>
       <SidebarMenu>
         {favorites.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild>
-              <a href={item.url} title={item.name}>
-                <span>{item.emoji}</span>
+            <SidebarMenuButton asChild onClick={() => onItemClick?.(item)}>
+              <div role="button" className="cursor-pointer" title={item.name}>
+                <item.icon className="w-4 h-4" />
                 <span>{item.name}</span>
-              </a>
+              </div>
             </SidebarMenuButton>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
